@@ -1,0 +1,3 @@
+pyAgxArm==1.0.0
+python-can==4.6.1
+Pillow==12.3.0

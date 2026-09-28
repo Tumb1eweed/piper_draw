@@ -1,0 +1,21 @@
+# Real-world calibration and generated drawing artefacts
+paper_calibration*.json
+*calibration*.json
+generated/
+references/
+*.json
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.mp4
+*.log
+*.work
+*.orig
+
+# Dependency and accidental WSL-copy directories
+.trazor_npm_stage_*/
+wsl.localhost/
+node_modules/
+tools/
+__pycache__/
