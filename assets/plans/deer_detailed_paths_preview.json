@@ -1,0 +1,2209 @@
+{
+  "source": "/home/chenrui/playground/generated/deer_trazor/deer_bold.svg.document.json",
+  "status": "preview_only_no_robot_motion",
+  "canvas_mm": {
+    "x": [
+      15.0,
+      168.0
+    ],
+    "y": [
+      15.0,
+      150.0
+    ]
+  },
+  "filter": {
+    "minimum_path_length_mm": 2.4,
+    "source_paths": 82,
+    "kept_paths": 84
+  },
+  "strokes": [
+    {
+      "order": 1,
+      "id": "shape-016-0",
+      "length_mm": 18.023,
+      "travel_from_previous_mm": 40.104,
+      "recommended_contact_depth_mm": 0.883,
+      "points": [
+        [
+          54.455,
+          22.183
+        ],
+        [
+          53.558,
+          24.349
+        ],
+        [
+          53.078,
+          26.945
+        ],
+        [
+          53.296,
+          28.946
+        ],
+        [
+          54.29,
+          32.017
+        ],
+        [
+          54.298,
+          33.513
+        ],
+        [
+          52.939,
+          35.945
+        ],
+        [
+          50.396,
+          38.374
+        ]
+      ]
+    },
+    {
+      "order": 2,
+      "id": "shape-014-0",
+      "length_mm": 21.463,
+      "travel_from_previous_mm": 4.259,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          47.858,
+          41.795
+        ],
+        [
+          45.913,
+          42.387
+        ],
+        [
+          42.745,
+          43.949
+        ],
+        [
+          41.087,
+          45.044
+        ],
+        [
+          38.645,
+          47.895
+        ],
+        [
+          37.289,
+          48.858
+        ],
+        [
+          34.314,
+          50.665
+        ],
+        [
+          31.672,
+          51.597
+        ],
+        [
+          30.858,
+          53.653
+        ]
+      ]
+    },
+    {
+      "order": 3,
+      "id": "shape-019-0",
+      "length_mm": 15.225,
+      "travel_from_previous_mm": 2.811,
+      "recommended_contact_depth_mm": 0.79,
+      "points": [
+        [
+          32.127,
+          56.161
+        ],
+        [
+          32.449,
+          56.984
+        ],
+        [
+          34.008,
+          57.543
+        ],
+        [
+          38.724,
+          56.617
+        ],
+        [
+          46.59,
+          57.073
+        ]
+      ]
+    },
+    {
+      "order": 4,
+      "id": "shape-011-0",
+      "length_mm": 29.885,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.883,
+      "points": [
+        [
+          46.59,
+          57.073
+        ],
+        [
+          47.854,
+          60.81
+        ],
+        [
+          47.874,
+          67.563
+        ],
+        [
+          49.14,
+          74.174
+        ],
+        [
+          51.768,
+          80.369
+        ],
+        [
+          54.963,
+          85.122
+        ]
+      ]
+    },
+    {
+      "order": 5,
+      "id": "shape-004-0",
+      "length_mm": 52.287,
+      "travel_from_previous_mm": 8.803,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          59.53,
+          92.648
+        ],
+        [
+          52.489,
+          100.23
+        ],
+        [
+          46.614,
+          105.057
+        ],
+        [
+          46.11,
+          106.065
+        ],
+        [
+          48.286,
+          112.031
+        ],
+        [
+          51.49,
+          122.906
+        ],
+        [
+          54.021,
+          127.215
+        ],
+        [
+          55.466,
+          128.721
+        ],
+        [
+          56.638,
+          126.758
+        ],
+        [
+          57.967,
+          126.512
+        ],
+        [
+          59.086,
+          127.025
+        ],
+        [
+          61.306,
+          129.818
+        ]
+      ]
+    },
+    {
+      "order": 6,
+      "id": "shape-009-0",
+      "length_mm": 36.416,
+      "travel_from_previous_mm": 10.072,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          55.47,
+          121.609
+        ],
+        [
+          52.758,
+          117.504
+        ],
+        [
+          51.25,
+          113.308
+        ],
+        [
+          50.363,
+          109.002
+        ],
+        [
+          50.91,
+          106.5
+        ],
+        [
+          52.645,
+          105.145
+        ],
+        [
+          58.696,
+          103.252
+        ],
+        [
+          62.522,
+          101.402
+        ],
+        [
+          65.203,
+          99.389
+        ],
+        [
+          67.903,
+          96.524
+        ]
+      ]
+    },
+    {
+      "order": 7,
+      "id": "shape-005-0",
+      "length_mm": 46.98,
+      "travel_from_previous_mm": 3.227,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          70.187,
+          94.244
+        ],
+        [
+          72.206,
+          96.798
+        ],
+        [
+          73.497,
+          100.886
+        ],
+        [
+          74.172,
+          106.039
+        ],
+        [
+          74.301,
+          113.759
+        ],
+        [
+          73.789,
+          121.433
+        ],
+        [
+          72.646,
+          129.271
+        ],
+        [
+          71.798,
+          132.362
+        ],
+        [
+          69.101,
+          137.555
+        ],
+        [
+          68.918,
+          139.396
+        ]
+      ]
+    },
+    {
+      "order": 8,
+      "id": "shape-010-0",
+      "length_mm": 33.536,
+      "travel_from_previous_mm": 12.524,
+      "recommended_contact_depth_mm": 0.883,
+      "points": [
+        [
+          83.127,
+          96.981
+        ],
+        [
+          92.956,
+          96.894
+        ],
+        [
+          98.873,
+          96.263
+        ],
+        [
+          105.194,
+          94.595
+        ],
+        [
+          112.244,
+          91.878
+        ],
+        [
+          115.858,
+          91.28
+        ]
+      ]
+    },
+    {
+      "order": 9,
+      "id": "shape-003-0",
+      "length_mm": 48.855,
+      "travel_from_previous_mm": 5.007,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          111.291,
+          93.332
+        ],
+        [
+          115.367,
+          99.489
+        ],
+        [
+          121.896,
+          106.078
+        ],
+        [
+          122.883,
+          107.998
+        ],
+        [
+          123.392,
+          110.341
+        ],
+        [
+          122.881,
+          114.206
+        ],
+        [
+          121.233,
+          118.297
+        ],
+        [
+          118.892,
+          122.394
+        ],
+        [
+          112.629,
+          131.669
+        ],
+        [
+          111.537,
+          133.901
+        ],
+        [
+          111.545,
+          134.835
+        ]
+      ]
+    },
+    {
+      "order": 10,
+      "id": "shape-007-0",
+      "length_mm": 58.456,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          111.545,
+          134.835
+        ],
+        [
+          114.069,
+          134.533
+        ],
+        [
+          115.204,
+          132.608
+        ],
+        [
+          118.107,
+          130.461
+        ],
+        [
+          118.398,
+          130.877
+        ],
+        [
+          118.085,
+          131.962
+        ],
+        [
+          115.748,
+          135.921
+        ],
+        [
+          115.174,
+          136.251
+        ],
+        [
+          116.0,
+          133.994
+        ],
+        [
+          122.535,
+          121.452
+        ],
+        [
+          128.592,
+          113.797
+        ],
+        [
+          130.009,
+          111.217
+        ],
+        [
+          130.331,
+          109.471
+        ],
+        [
+          129.972,
+          107.698
+        ],
+        [
+          126.375,
+          101.484
+        ],
+        [
+          126.007,
+          98.349
+        ]
+      ]
+    },
+    {
+      "order": 11,
+      "id": "shape-001-0",
+      "length_mm": 57.735,
+      "travel_from_previous_mm": 6.212,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          120.679,
+          95.156
+        ],
+        [
+          137.027,
+          103.447
+        ],
+        [
+          141.266,
+          106.562
+        ],
+        [
+          143.961,
+          109.466
+        ],
+        [
+          146.734,
+          114.383
+        ],
+        [
+          150.604,
+          125.951
+        ],
+        [
+          151.365,
+          130.046
+        ],
+        [
+          151.078,
+          133.966
+        ],
+        [
+          150.709,
+          133.99
+        ],
+        [
+          150.278,
+          132.892
+        ],
+        [
+          150.873,
+          135.519
+        ]
+      ]
+    },
+    {
+      "order": 12,
+      "id": "shape-000-0",
+      "length_mm": 68.929,
+      "travel_from_previous_mm": 7.149,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          155.187,
+          129.818
+        ],
+        [
+          154.427,
+          125.75
+        ],
+        [
+          150.128,
+          114.753
+        ],
+        [
+          149.377,
+          107.401
+        ],
+        [
+          148.614,
+          104.511
+        ],
+        [
+          147.521,
+          102.93
+        ],
+        [
+          139.365,
+          96.838
+        ],
+        [
+          137.24,
+          94.338
+        ],
+        [
+          135.649,
+          91.265
+        ],
+        [
+          135.147,
+          87.708
+        ],
+        [
+          136.2,
+          78.531
+        ],
+        [
+          135.921,
+          74.686
+        ],
+        [
+          135.26,
+          72.971
+        ],
+        [
+          134.126,
+          71.448
+        ],
+        [
+          131.336,
+          69.616
+        ]
+      ]
+    },
+    {
+      "order": 13,
+      "id": "shape-008-0",
+      "length_mm": 42.073,
+      "travel_from_previous_mm": 6.673,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          126.261,
+          65.283
+        ],
+        [
+          121.039,
+          64.543
+        ],
+        [
+          114.097,
+          64.49
+        ],
+        [
+          93.22,
+          66.975
+        ],
+        [
+          84.396,
+          67.335
+        ]
+      ]
+    },
+    {
+      "order": 14,
+      "id": "shape-017-0",
+      "length_mm": 17.055,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.93,
+      "points": [
+        [
+          84.396,
+          67.335
+        ],
+        [
+          77.803,
+          65.727
+        ],
+        [
+          75.515,
+          65.753
+        ],
+        [
+          70.797,
+          66.646
+        ],
+        [
+          67.649,
+          66.195
+        ]
+      ]
+    },
+    {
+      "order": 15,
+      "id": "shape-006-0",
+      "length_mm": 47.999,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.883,
+      "points": [
+        [
+          67.649,
+          66.195
+        ],
+        [
+          64.819,
+          64.061
+        ],
+        [
+          62.959,
+          61.766
+        ],
+        [
+          58.515,
+          50.703
+        ],
+        [
+          55.819,
+          46.37
+        ],
+        [
+          59.53,
+          45.044
+        ],
+        [
+          61.273,
+          43.722
+        ],
+        [
+          62.384,
+          42.073
+        ],
+        [
+          63.748,
+          38.246
+        ],
+        [
+          58.99,
+          39.203
+        ],
+        [
+          52.425,
+          42.707
+        ]
+      ]
+    },
+    {
+      "order": 16,
+      "id": "shape-012-0",
+      "length_mm": 29.257,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          52.425,
+          42.707
+        ],
+        [
+          51.888,
+          41.43
+        ],
+        [
+          53.082,
+          39.209
+        ],
+        [
+          55.642,
+          37.038
+        ],
+        [
+          58.404,
+          35.383
+        ],
+        [
+          66.655,
+          32.803
+        ],
+        [
+          71.836,
+          32.137
+        ],
+        [
+          75.416,
+          32.515
+        ],
+        [
+          76.276,
+          31.533
+        ]
+      ]
+    },
+    {
+      "order": 17,
+      "id": "shape-015-0",
+      "length_mm": 20.658,
+      "travel_from_previous_mm": 3.804,
+      "recommended_contact_depth_mm": 0.883,
+      "points": [
+        [
+          73.231,
+          29.253
+        ],
+        [
+          67.587,
+          31.262
+        ],
+        [
+          62.575,
+          31.775
+        ],
+        [
+          58.953,
+          33.231
+        ],
+        [
+          57.003,
+          33.115
+        ],
+        [
+          53.694,
+          31.305
+        ]
+      ]
+    },
+    {
+      "order": 18,
+      "id": "shape-018-0",
+      "length_mm": 15.191,
+      "travel_from_previous_mm": 4.221,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          57.5,
+          33.129
+        ],
+        [
+          59.372,
+          31.023
+        ],
+        [
+          60.981,
+          28.516
+        ],
+        [
+          62.269,
+          22.299
+        ],
+        [
+          63.336,
+          19.447
+        ]
+      ]
+    },
+    {
+      "order": 19,
+      "id": "shape-021-0",
+      "length_mm": 12.338,
+      "travel_from_previous_mm": 4.599,
+      "recommended_contact_depth_mm": 0.79,
+      "points": [
+        [
+          67.649,
+          21.043
+        ],
+        [
+          60.799,
+          31.305
+        ]
+      ]
+    },
+    {
+      "order": 20,
+      "id": "shape-013-0",
+      "length_mm": 22.518,
+      "travel_from_previous_mm": 73.755,
+      "recommended_contact_depth_mm": 0.942,
+      "points": [
+        [
+          126.261,
+          65.283
+        ],
+        [
+          129.727,
+          67.693
+        ],
+        [
+          136.359,
+          70.718
+        ],
+        [
+          138.33,
+          72.311
+        ],
+        [
+          139.809,
+          74.702
+        ],
+        [
+          140.683,
+          78.156
+        ],
+        [
+          140.677,
+          78.823
+        ],
+        [
+          139.709,
+          79.878
+        ]
+      ]
+    },
+    {
+      "order": 21,
+      "id": "shape-020-0",
+      "length_mm": 12.787,
+      "travel_from_previous_mm": 24.456,
+      "recommended_contact_depth_mm": 0.79,
+      "points": [
+        [
+          119.918,
+          94.244
+        ],
+        [
+          118.255,
+          93.505
+        ],
+        [
+          116.075,
+          90.962
+        ],
+        [
+          114.376,
+          87.666
+        ],
+        [
+          113.067,
+          83.982
+        ]
+      ]
+    },
+    {
+      "order": 22,
+      "id": "shape-043-0",
+      "length_mm": 5.454,
+      "travel_from_previous_mm": 7.108,
+      "recommended_contact_depth_mm": 0.79,
+      "points": [
+        [
+          109.515,
+          90.139
+        ],
+        [
+          113.267,
+          90.209
+        ],
+        [
+          114.59,
+          91.28
+        ]
+      ]
+    },
+    {
+      "order": 23,
+      "id": "shape-069-0",
+      "length_mm": 3.108,
+      "travel_from_previous_mm": 16.953,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          121.44,
+          75.773
+        ],
+        [
+          118.649,
+          74.405
+        ]
+      ]
+    },
+    {
+      "order": 24,
+      "id": "shape-072-0",
+      "length_mm": 2.874,
+      "travel_from_previous_mm": 4.34,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          118.903,
+          70.072
+        ],
+        [
+          121.694,
+          70.756
+        ]
+      ]
+    },
+    {
+      "order": 25,
+      "id": "shape-055-0",
+      "length_mm": 3.993,
+      "travel_from_previous_mm": 3.593,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          123.724,
+          67.791
+        ],
+        [
+          127.276,
+          69.616
+        ]
+      ]
+    },
+    {
+      "order": 26,
+      "id": "shape-065-0",
+      "length_mm": 3.215,
+      "travel_from_previous_mm": 4.165,
+      "recommended_contact_depth_mm": 0.837,
+      "points": [
+        [
+          125.754,
+          73.492
+        ],
+        [
+          128.545,
+          75.089
+        ]
+      ]
+    },
+    {
+      "order": 27,
+      "id": "shape-042-0",
+      "length_mm": 5.184,
+      "travel_from_previous_mm": 10.432,
+      "recommended_contact_depth_mm": 0.813,
+      "points": [
+        [
+          137.425,
+          80.562
+        ],
+        [
+          138.621,
+          83.36
+        ],
+        [
+          140.47,
+          84.438
+        ]
+      ]
+    },
+    {
+      "order": 28,
+      "id": "shape-046-0",
+      "length_mm": 4.624,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.907,
+      "points": [
+        [
+          140.47,
+          84.438
+        ],
+        [
+          139.709,
+          79.878
+        ]
+      ]
+    },
+    {
+      "order": 29,
+      "id": "shape-062-0",
+      "length_mm": 3.575,
+      "travel_from_previous_mm": 23.267,
+      "recommended_contact_depth_mm": 0.79,
+      "points": [
+        [
+          143.007,
+          102.91
+        ],
+        [
+          145.025,
+          103.864
+        ],
+        [
+          145.799,
+          104.962
+        ]
+      ]
+    },
+    {
+      "order": 30,
+      "id": "shape-068-0",
+      "length_mm": 2.951,
+      "travel_from_previous_mm": 18.641,
+      "recommended_contact_depth_mm": 0.79,
+      "points": [
+        [
+          127.784,
+          109.751
+        ],
+        [
+          127.734,
+          108.09
+        ],
+        [
+          127.022,
+          107.014
+        ]
+      ]
+    },
+    {
+      "order": 31,
+      "id": "shape-061-0",
+      "length_mm": 3.615,
+      "travel_from_previous_mm": 31.762,
+      "recommended_contact_depth_mm": 0.883,
+      "points": [
+        [
+          111.291,
+          134.607
+        ],
+        [
+          109.643,
+          134.853
+        ],
+        [
+          108.5,
+          136.432
+        ]
+      ]
+    },
+    {
+      "order": 32,
+      "id": "shape-059-0",
+      "length_mm": 3.68,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.942,
+      "points": [
+        [
+          108.5,
+          136.432
+        ],
+        [
+          110.613,
+          136.053
+        ],
+        [
+          111.545,
+          134.835
+        ]
+      ]
+    },
+    {
+      "order": 33,
+      "id": "shape-050-0",
+      "length_mm": 4.233,
+      "travel_from_previous_mm": 36.404,
+      "recommended_contact_depth_mm": 0.883,
+      "points": [
+        [
+          147.828,
+          137.8
+        ],
+        [
+          149.113,
+          136.088
+        ],
+        [
+          151.127,
+          135.519
+        ]
+      ]
+    },
+    {
+      "order": 34,
+      "id": "shape-032-0",
+      "length_mm": 7.796,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          151.127,
+          135.519
+        ],
+        [
+          152.16,
+          135.357
+        ],
+        [
+          153.285,
+          134.588
+        ],
+        [
+          154.012,
+          130.802
+        ],
+        [
+          155.187,
+          129.818
+        ]
+      ]
+    },
+    {
+      "order": 35,
+      "id": "shape-053-0",
+      "length_mm": 3.905,
+      "travel_from_previous_mm": 6.999,
+      "recommended_contact_depth_mm": 0.965,
+      "points": [
+        [
+          151.127,
+          135.519
+        ],
+        [
+          150.303,
+          137.255
+        ],
+        [
+          148.59,
+          138.256
+        ]
+      ]
+    },
+    {
+      "order": 36,
+      "id": "shape-035-0",
+      "length_mm": 7.48,
+      "travel_from_previous_mm": 73.887,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          74.754,
+          135.519
+        ],
+        [
+          73.001,
+          136.338
+        ],
+        [
+          71.82,
+          138.44
+        ],
+        [
+          68.918,
+          139.624
+        ]
+      ]
+    },
+    {
+      "order": 37,
+      "id": "shape-047-0",
+      "length_mm": 4.345,
+      "travel_from_previous_mm": 0.228,
+      "recommended_contact_depth_mm": 0.977,
+      "points": [
+        [
+          68.918,
+          139.396
+        ],
+        [
+          68.65,
+          140.247
+        ],
+        [
+          67.403,
+          141.35
+        ],
+        [
+          65.619,
+          141.22
+        ]
+      ]
+    },
+    {
+      "order": 38,
+      "id": "shape-057-0",
+      "length_mm": 3.911,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.883,
+      "points": [
+        [
+          65.619,
+          141.22
+        ],
+        [
+          66.927,
+          139.901
+        ],
+        [
+          68.918,
+          139.396
+        ]
+      ]
+    },
+    {
+      "order": 39,
+      "id": "shape-039-0",
+      "length_mm": 6.374,
+      "travel_from_previous_mm": 16.134,
+      "recommended_contact_depth_mm": 0.907,
+      "points": [
+        [
+          58.769,
+          126.854
+        ],
+        [
+          58.312,
+          125.135
+        ],
+        [
+          56.201,
+          123.112
+        ],
+        [
+          55.47,
+          121.609
+        ]
+      ]
+    },
+    {
+      "order": 40,
+      "id": "shape-049-0",
+      "length_mm": 4.203,
+      "travel_from_previous_mm": 25.319,
+      "recommended_contact_depth_mm": 0.79,
+      "points": [
+        [
+          78.813,
+          111.803
+        ],
+        [
+          77.594,
+          110.738
+        ],
+        [
+          77.545,
+          108.155
+        ]
+      ]
+    },
+    {
+      "order": 41,
+      "id": "shape-025-0",
+      "length_mm": 10.147,
+      "travel_from_previous_mm": 12.174,
+      "recommended_contact_depth_mm": 0.93,
+      "points": [
+        [
+          72.216,
+          97.209
+        ],
+        [
+          69.846,
+          96.969
+        ],
+        [
+          67.708,
+          96.331
+        ],
+        [
+          65.758,
+          95.346
+        ],
+        [
+          63.082,
+          93.332
+        ]
+      ]
+    },
+    {
+      "order": 42,
+      "id": "shape-031-0",
+      "length_mm": 8.466,
+      "travel_from_previous_mm": 3.618,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          59.53,
+          92.648
+        ],
+        [
+          57.213,
+          88.232
+        ],
+        [
+          56.231,
+          84.894
+        ]
+      ]
+    },
+    {
+      "order": 43,
+      "id": "shape-044-0",
+      "length_mm": 5.002,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.883,
+      "points": [
+        [
+          56.231,
+          84.894
+        ],
+        [
+          54.544,
+          82.402
+        ],
+        [
+          52.679,
+          81.702
+        ]
+      ]
+    },
+    {
+      "order": 44,
+      "id": "shape-036-0",
+      "length_mm": 7.308,
+      "travel_from_previous_mm": 3.813,
+      "recommended_contact_depth_mm": 0.79,
+      "points": [
+        [
+          56.485,
+          81.93
+        ],
+        [
+          58.278,
+          85.775
+        ],
+        [
+          60.291,
+          88.087
+        ]
+      ]
+    },
+    {
+      "order": 45,
+      "id": "shape-027-0",
+      "length_mm": 8.995,
+      "travel_from_previous_mm": 5.258,
+      "recommended_contact_depth_mm": 0.813,
+      "points": [
+        [
+          63.843,
+          84.21
+        ],
+        [
+          63.822,
+          86.271
+        ],
+        [
+          64.351,
+          87.827
+        ],
+        [
+          67.649,
+          91.964
+        ]
+      ]
+    },
+    {
+      "order": 46,
+      "id": "shape-034-0",
+      "length_mm": 7.955,
+      "travel_from_previous_mm": 13.287,
+      "recommended_contact_depth_mm": 0.813,
+      "points": [
+        [
+          66.381,
+          78.737
+        ],
+        [
+          70.44,
+          71.896
+        ]
+      ]
+    },
+    {
+      "order": 47,
+      "id": "shape-063-0",
+      "length_mm": 3.33,
+      "travel_from_previous_mm": 22.892,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          93.276,
+          70.3
+        ],
+        [
+          96.575,
+          69.844
+        ]
+      ]
+    },
+    {
+      "order": 48,
+      "id": "shape-060-0",
+      "length_mm": 3.806,
+      "travel_from_previous_mm": 4.01,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          99.873,
+          72.124
+        ],
+        [
+          103.679,
+          72.124
+        ]
+      ]
+    },
+    {
+      "order": 49,
+      "id": "shape-070-0",
+      "length_mm": 3.045,
+      "travel_from_previous_mm": 3.131,
+      "recommended_contact_depth_mm": 0.79,
+      "points": [
+        [
+          105.201,
+          74.861
+        ],
+        [
+          108.246,
+          74.861
+        ]
+      ]
+    },
+    {
+      "order": 50,
+      "id": "shape-064-0",
+      "length_mm": 3.306,
+      "travel_from_previous_mm": 4.826,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          110.784,
+          70.756
+        ],
+        [
+          114.082,
+          70.984
+        ]
+      ]
+    },
+    {
+      "order": 51,
+      "id": "shape-066-0",
+      "length_mm": 3.299,
+      "travel_from_previous_mm": 3.727,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          114.843,
+          67.335
+        ],
+        [
+          118.142,
+          67.335
+        ]
+      ]
+    },
+    {
+      "order": 52,
+      "id": "shape-054-0",
+      "length_mm": 4.085,
+      "travel_from_previous_mm": 8.892,
+      "recommended_contact_depth_mm": 0.813,
+      "points": [
+        [
+          109.261,
+          67.791
+        ],
+        [
+          105.201,
+          68.247
+        ]
+      ]
+    },
+    {
+      "order": 53,
+      "id": "shape-037-0",
+      "length_mm": 7.395,
+      "travel_from_previous_mm": 44.888,
+      "recommended_contact_depth_mm": 0.79,
+      "points": [
+        [
+          84.649,
+          28.34
+        ],
+        [
+          86.626,
+          27.405
+        ],
+        [
+          88.252,
+          26.019
+        ],
+        [
+          89.724,
+          23.323
+        ]
+      ]
+    },
+    {
+      "order": 54,
+      "id": "shape-023-0",
+      "length_mm": 11.738,
+      "travel_from_previous_mm": 2.03,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          87.694,
+          23.323
+        ],
+        [
+          89.662,
+          23.424
+        ],
+        [
+          91.835,
+          22.032
+        ],
+        [
+          93.228,
+          19.554
+        ],
+        [
+          94.291,
+          15.342
+        ]
+      ]
+    },
+    {
+      "order": 55,
+      "id": "shape-024-0",
+      "length_mm": 10.197,
+      "travel_from_previous_mm": 7.431,
+      "recommended_contact_depth_mm": 0.813,
+      "points": [
+        [
+          87.694,
+          18.763
+        ],
+        [
+          87.637,
+          23.263
+        ],
+        [
+          84.649,
+          28.112
+        ]
+      ]
+    },
+    {
+      "order": 56,
+      "id": "shape-029-0",
+      "length_mm": 9.18,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.0,
+      "points": [
+        [
+          84.649,
+          28.112
+        ],
+        [
+          80.789,
+          30.537
+        ],
+        [
+          76.276,
+          31.533
+        ]
+      ]
+    },
+    {
+      "order": 57,
+      "id": "shape-048-0",
+      "length_mm": 4.106,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.93,
+      "points": [
+        [
+          76.276,
+          31.533
+        ],
+        [
+          73.829,
+          30.624
+        ],
+        [
+          73.231,
+          29.253
+        ]
+      ]
+    },
+    {
+      "order": 58,
+      "id": "shape-058-0",
+      "length_mm": 3.646,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.883,
+      "points": [
+        [
+          73.231,
+          29.253
+        ],
+        [
+          75.08,
+          28.198
+        ],
+        [
+          75.515,
+          26.744
+        ]
+      ]
+    },
+    {
+      "order": 59,
+      "id": "shape-028-0",
+      "length_mm": 8.609,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.813,
+      "points": [
+        [
+          75.515,
+          26.744
+        ],
+        [
+          77.456,
+          24.688
+        ],
+        [
+          80.336,
+          19.675
+        ]
+      ]
+    },
+    {
+      "order": 60,
+      "id": "shape-033-0",
+      "length_mm": 8.088,
+      "travel_from_previous_mm": 2.329,
+      "recommended_contact_depth_mm": 0.872,
+      "points": [
+        [
+          78.052,
+          19.219
+        ],
+        [
+          79.914,
+          19.779
+        ],
+        [
+          81.401,
+          19.106
+        ],
+        [
+          83.888,
+          15.342
+        ]
+      ]
+    },
+    {
+      "order": 61,
+      "id": "shape-022-0",
+      "length_mm": 11.693,
+      "travel_from_previous_mm": 6.347,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          77.545,
+          15.57
+        ],
+        [
+          77.945,
+          17.805
+        ],
+        [
+          77.688,
+          20.746
+        ],
+        [
+          75.261,
+          26.744
+        ]
+      ]
+    },
+    {
+      "order": 62,
+      "id": "shape-071-0",
+      "length_mm": 2.749,
+      "travel_from_previous_mm": 0.254,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          75.515,
+          26.744
+        ],
+        [
+          74.198,
+          27.355
+        ],
+        [
+          73.739,
+          28.568
+        ]
+      ]
+    },
+    {
+      "order": 63,
+      "id": "shape-040-0",
+      "length_mm": 6.501,
+      "travel_from_previous_mm": 16.906,
+      "recommended_contact_depth_mm": 0.813,
+      "points": [
+        [
+          61.052,
+          39.742
+        ],
+        [
+          57.563,
+          41.287
+        ],
+        [
+          56.231,
+          43.619
+        ]
+      ]
+    },
+    {
+      "order": 64,
+      "id": "shape-056-0",
+      "length_mm": 3.745,
+      "travel_from_previous_mm": 8.57,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          47.858,
+          41.795
+        ],
+        [
+          49.117,
+          40.404
+        ],
+        [
+          48.619,
+          38.602
+        ]
+      ]
+    },
+    {
+      "order": 65,
+      "id": "shape-067-0",
+      "length_mm": 3.23,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.977,
+      "points": [
+        [
+          48.619,
+          38.602
+        ],
+        [
+          46.83,
+          37.95
+        ],
+        [
+          45.575,
+          38.374
+        ]
+      ]
+    },
+    {
+      "order": 66,
+      "id": "shape-045-0",
+      "length_mm": 4.918,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 0.883,
+      "points": [
+        [
+          45.575,
+          38.374
+        ],
+        [
+          41.007,
+          36.55
+        ]
+      ]
+    },
+    {
+      "order": 67,
+      "id": "shape-026-0",
+      "length_mm": 9.196,
+      "travel_from_previous_mm": 2.662,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          43.291,
+          37.918
+        ],
+        [
+          41.205,
+          36.797
+        ],
+        [
+          40.083,
+          35.298
+        ],
+        [
+          39.658,
+          33.496
+        ],
+        [
+          39.739,
+          30.393
+        ]
+      ]
+    },
+    {
+      "order": 68,
+      "id": "shape-038-0",
+      "length_mm": 6.938,
+      "travel_from_previous_mm": 5.656,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          45.321,
+          31.305
+        ],
+        [
+          45.078,
+          34.462
+        ],
+        [
+          46.59,
+          37.918
+        ]
+      ]
+    },
+    {
+      "order": 69,
+      "id": "shape-051-0",
+      "length_mm": 3.881,
+      "travel_from_previous_mm": 1.113,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          45.575,
+          38.374
+        ],
+        [
+          46.931,
+          40.183
+        ],
+        [
+          47.097,
+          41.795
+        ]
+      ]
+    },
+    {
+      "order": 70,
+      "id": "shape-041-0",
+      "length_mm": 6.263,
+      "travel_from_previous_mm": 5.251,
+      "recommended_contact_depth_mm": 0.86,
+      "points": [
+        [
+          47.351,
+          47.04
+        ],
+        [
+          44.223,
+          47.622
+        ],
+        [
+          41.515,
+          49.092
+        ]
+      ]
+    },
+    {
+      "order": 71,
+      "id": "shape-030-0",
+      "length_mm": 9.242,
+      "travel_from_previous_mm": 7.76,
+      "recommended_contact_depth_mm": 0.79,
+      "points": [
+        [
+          37.455,
+          55.705
+        ],
+        [
+          34.712,
+          56.245
+        ],
+        [
+          31.366,
+          56.09
+        ],
+        [
+          30.663,
+          55.721
+        ],
+        [
+          30.341,
+          54.988
+        ],
+        [
+          30.405,
+          54.198
+        ],
+        [
+          30.858,
+          53.653
+        ]
+      ]
+    },
+    {
+      "order": 72,
+      "id": "shape-052-0",
+      "length_mm": 3.911,
+      "travel_from_previous_mm": 19.37,
+      "recommended_contact_depth_mm": 0.813,
+      "points": [
+        [
+          50.142,
+          55.477
+        ],
+        [
+          51.799,
+          54.55
+        ],
+        [
+          52.679,
+          52.741
+        ]
+      ]
+    },
+    {
+      "id": "hoof-fill-raised_front-1",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          48.8,
+          120.3
+        ],
+        [
+          53.5,
+          123.7
+        ]
+      ],
+      "order": 73
+    },
+    {
+      "id": "hoof-fill-raised_front-2",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          49.3,
+          122.3
+        ],
+        [
+          54.0,
+          125.7
+        ]
+      ],
+      "order": 74
+    },
+    {
+      "id": "hoof-fill-raised_front-3",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          49.8,
+          124.3
+        ],
+        [
+          54.5,
+          127.7
+        ]
+      ],
+      "order": 75
+    },
+    {
+      "id": "hoof-fill-front-1",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          69.8,
+          134.3
+        ],
+        [
+          74.5,
+          137.7
+        ]
+      ],
+      "order": 76
+    },
+    {
+      "id": "hoof-fill-front-2",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          70.3,
+          136.3
+        ],
+        [
+          75.0,
+          139.7
+        ]
+      ],
+      "order": 77
+    },
+    {
+      "id": "hoof-fill-front-3",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          70.8,
+          138.3
+        ],
+        [
+          75.5,
+          141.7
+        ]
+      ],
+      "order": 78
+    },
+    {
+      "id": "hoof-fill-rear_inner-1",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          112.0,
+          129.8
+        ],
+        [
+          116.7,
+          133.2
+        ]
+      ],
+      "order": 79
+    },
+    {
+      "id": "hoof-fill-rear_inner-2",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          112.5,
+          131.8
+        ],
+        [
+          117.2,
+          135.2
+        ]
+      ],
+      "order": 80
+    },
+    {
+      "id": "hoof-fill-rear_inner-3",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          113.0,
+          133.8
+        ],
+        [
+          117.7,
+          137.2
+        ]
+      ],
+      "order": 81
+    },
+    {
+      "id": "hoof-fill-rear-1",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          148.5,
+          130.3
+        ],
+        [
+          153.2,
+          133.7
+        ]
+      ],
+      "order": 82
+    },
+    {
+      "id": "hoof-fill-rear-2",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          149.0,
+          132.3
+        ],
+        [
+          153.7,
+          135.7
+        ]
+      ],
+      "order": 83
+    },
+    {
+      "id": "hoof-fill-rear-3",
+      "length_mm": 5.8,
+      "travel_from_previous_mm": 0.0,
+      "recommended_contact_depth_mm": 1.1,
+      "points": [
+        [
+          149.5,
+          134.3
+        ],
+        [
+          154.2,
+          137.7
+        ]
+      ],
+      "order": 84
+    }
+  ]
+}

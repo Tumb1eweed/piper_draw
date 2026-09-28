@@ -2,6 +2,15 @@
 
 This is the maintained, feedback-gated workflow used for the tiger, crane, deer, and double-fish drawings. It does **not** include older hand-authored, fill, bamboo, or calligraphy experiments.
 
+## Curated examples
+
+`assets/references/` contains the clean source line art used by the maintained
+animal/dragon examples. `assets/trajectory-previews/` contains the reviewed
+centreline previews, and `assets/plans/` contains the matching preview-only
+JSON plans. They are reproducibility artefacts only: the plans do **not** embed
+the local paper calibration and remain inert unless explicitly passed to the
+three-flag live executor command below.
+
 ## Dependencies
 
 - Windows 11 with WSL2 Ubuntu and `usbipd-win`.

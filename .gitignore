@@ -13,6 +13,10 @@ references/
 *.work
 *.orig
 
+# Curated reproducible examples are intentionally versioned.
+!assets/
+!assets/**
+
 # Dependency and accidental WSL-copy directories
 .trazor_npm_stage_*/
 wsl.localhost/
