@@ -111,6 +111,11 @@ def main() -> None:
                 cleaned.append(point)
             cleaned.append(mapped[-1])
             mapped = cleaned
+            # A valid fitted path must remain inside the source image mapped
+            # rectangle.  Retaining a component that still crosses an edge
+            # after spike cleanup would create a visibly false long segment.
+            if any(point[0] < x0 or point[0] > x1 or point[1] < y0 or point[1] > y1 for point in mapped):
+                continue
             length = path_length(mapped)
             if length < args.min_length_mm:
                 continue

@@ -1,7 +1,7 @@
 # Copy only the maintained drawing workflow into the WSL project directory.
 $ErrorActionPreference = 'Stop'
 $destination = '\\wsl.localhost\Ubuntu\home\chenrui\playground'
-$files = @('AGENTS.md', 'README.md', 'environment.yml', 'requirements-sdk.txt', 'calibrate_paper.py', 'read_piper_status.py', 'execute_plan.py', 'prepare_centerline_plan.py')
+$files = @('AGENTS.md', 'README.md', 'environment.yml', 'requirements-sdk.txt', 'calibrate_paper.py', 'read_piper_status.py', 'execute_plan.py', 'prepare_centerline_plan.py', 'tight_crop_line_art.py', 'make_detail_subset.py')
 
 if (-not (Test-Path -LiteralPath $destination)) {
     throw "Ubuntu WSL is not running or $destination does not exist. Start Ubuntu once, then retry."
