@@ -21,7 +21,15 @@ def main() -> int:
         time.sleep(args.wait)
         print(f"connected:  {robot.is_connected()}")
         print(f"comm_error: {robot.has_comm_error()}")
-        print(f"arm_status: {robot.get_arm_status()}")
+        arm_status = robot.get_arm_status()
+        print(f"arm_status: {arm_status}")
+        motion_status = None if arm_status is None else getattr(arm_status.msg, "motion_status", None)
+        if motion_status == 0:
+            print("motion_target: reached")
+        elif motion_status == 1:
+            print("motion_target: moving / not yet reached")
+        else:
+            print(f"motion_target: unknown ({motion_status})")
         joints = robot.get_joint_angles()
         if joints is None:
             print("joint_angles: no feedback received")

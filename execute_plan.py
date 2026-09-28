@@ -134,6 +134,13 @@ def feedback_or_fail(robot, where):
 
 
 def wait_arrival(robot, target, where, timeout=35.0):
+    """Wait for three consecutive in-tolerance, successful feedback samples.
+
+    Piper encodes ``motion_status == 1`` as *not yet reached*, although this
+    SDK renders the enum as ``REACH_TARGET_POS_FAILED``.  It is a progress
+    state, not a terminal fault.  Only a lost SDK feedback stream or
+    exhaustion of this bounded wait may stop a drawing.
+    """
     deadline = time.monotonic() + timeout
     stable = 0
     while time.monotonic() < deadline:
@@ -238,15 +245,27 @@ def main():
             contact_depth = min(1.4, max(0.4, contact_depth))
             hover = pose(points[0], HOVER_MM)
             contact = pose(points[0], -contact_depth)
+            record(progress, status="running", phase="command_pending", completed=index - 1,
+                   active_stroke=index, active_stroke_id=stroke["id"], active_command="hover",
+                   target_tcp=hover[:3], **summary)
             move_verified(robot, hover, f"stroke {index} hover")
             last_verified = hover
+            record(progress, status="running", phase="command_pending", completed=index - 1,
+                   active_stroke=index, active_stroke_id=stroke["id"], active_command="contact",
+                   target_tcp=contact[:3], **summary)
             move_verified(robot, contact, f"stroke {index} contact")
             last_verified = contact
             for point_index, point in enumerate(points[1:], 1):
                 target = pose(point, -contact_depth)
+                record(progress, status="running", phase="command_pending", completed=index - 1,
+                       active_stroke=index, active_stroke_id=stroke["id"],
+                       active_command=f"line point {point_index}", target_tcp=target[:3], **summary)
                 move_verified(robot, target, f"stroke {index} point {point_index}", linear=True)
                 last_verified = target
             lift = pose(points[-1], HOVER_MM)
+            record(progress, status="running", phase="command_pending", completed=index - 1,
+                   active_stroke=index, active_stroke_id=stroke["id"], active_command="lift",
+                   target_tcp=lift[:3], **summary)
             move_verified(robot, lift, f"stroke {index} lift")
             last_verified = lift
             record(progress, status="running", phase="drawing", completed=index, total=summary["strokes"], last_stroke=stroke["id"], **summary)

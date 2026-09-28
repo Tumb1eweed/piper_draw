@@ -30,6 +30,8 @@ Do not consider a previous successful check valid for a later motion.
 - `calibrate_paper.py` records feedback only; it must not move the arm. The four points must use the actual pen/tool and the same zero SDK TCP offset as the executor.
 - Never alter `paper_calibration_current_tool.json` implicitly while preparing an image or changing a drawing.
 - Every pen-down path is `hover -> verified contact -> verified line targets -> verified lift`. On a feedback failure, stop sending future targets.
+- Piper's SDK labels `motion_status == 1` as `REACH_TARGET_POS_FAILED`, but its protocol meaning is simply **not yet reached**. It is a progress state, not a terminal trajectory error. The executor requires three consecutive `motion_status == 0` samples within its Cartesian tolerance; only an executor timeout (recorded as `status: stopped`), lost SDK feedback, or a joint/arm fault is a trajectory failure. Do not kill a live executor based solely on a `motion_status == 1` reader snapshot.
+- During a draw, inspect `draw_progress.json` for the active stroke and target. It is updated before every hover, contact, line, and lift command, so a real timeout can be reproduced without guessing which coordinate failed.
 - After a replug, rerun `mount_piper_can.cmd`; do not merely run `ip link set can0 up`.
 
 ## Dependencies
