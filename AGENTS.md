@@ -10,6 +10,7 @@ Only this workflow is maintained:
 2. `calibrate_paper.py` records four pen-tip TCP references: `origin`, `x`, `y`, and `lift`. The active file is `/home/chenrui/playground/paper_calibration_current_tool.json`.
 3. Trazor converts a clean line-art reference into a centreline SVG document. `prepare_centerline_plan.py` filters, orders, maps and renders a **preview-only** JSON plan.
 4. A human reviews the preview. `execute_plan.py` performs a live feedback gate, then draws only with `--execute`, `--confirmed`, and `--approved-plan`.
+5. `piper_draw_ui.py` is an optional **local-only** picker for curated plans. It must remain bound to `127.0.0.1`, use a fixed plan allowlist, require a browser-side physical-workspace confirmation, and delegate all motion to the same executor in step 4.
 
 Do not reintroduce legacy raster fills, hand-authored animal trajectories, `move_c` approximations for arbitrary curves, or old bamboo/calligraphy plans into the production workflow.
 

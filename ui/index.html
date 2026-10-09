@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Piper Draw Studio</title>
+    <link rel="stylesheet" href="/ui/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="masthead">
+        <div>
+          <p class="eyebrow">AGILEX PIPER · LOCAL CONTROL</p>
+          <h1>墨线画廊</h1>
+          <p class="subtitle">选一幅已审核的线稿，在本机安全门槛通过后开始作画。</p>
+        </div>
+        <div class="status-card" aria-live="polite">
+          <span id="status-dot" class="status-dot"></span>
+          <div><strong id="status-title">尚未检查连接</strong><small id="status-detail">点击“检查连接”读取 CAN 与关节反馈。</small></div>
+        </div>
+      </header>
+
+      <section class="toolbar" aria-label="控制栏">
+        <button id="status-button" class="secondary">检查连接</button>
+        <p>仅本机访问 · 速度 8% · 每段路径均反馈校验</p>
+      </section>
+
+      <section id="gallery" class="gallery" aria-label="画作选择"></section>
+
+      <section class="draw-panel">
+        <div>
+          <p class="eyebrow">SELECTED WORK</p>
+          <h2 id="selected-title">请选择一幅画</h2>
+          <p id="selected-description">可切换查看参考线稿与实际执行的中心线轨迹预览。</p>
+        </div>
+        <div class="preview-switch" role="group" aria-label="预览类型">
+          <button data-view="preview" class="view-button active">轨迹预览</button>
+          <button data-view="reference" class="view-button">参考线稿</button>
+        </div>
+        <img id="art-preview" alt="所选画作预览" />
+        <label class="confirm"><input id="safety-confirm" type="checkbox" /> <span>我确认：上位机已关闭、机械臂已上电、急停已释放、纸张固定、毛笔夹紧且工作区无人。</span></label>
+        <button id="draw-button" class="primary" disabled>开始作画</button>
+        <p class="warning">紧急情况请使用机械臂的物理急停；此页面不是安全急停装置。</p>
+      </section>
+
+      <section class="execution" aria-live="polite">
+        <div class="execution-head"><h2>执行状态</h2><span id="job-badge">空闲</span></div>
+        <pre id="job-log">等待选择画作。</pre>
+      </section>
+    </main>
+    <script src="/ui/app.js"></script>
+  </body>
+</html>

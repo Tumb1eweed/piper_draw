@@ -9,6 +9,7 @@ if (-not (Test-Path -LiteralPath $destination)) {
 foreach ($file in $files) {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot $file) -Destination (Join-Path $destination $file) -Force
 }
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'assets') -Destination (Join-Path $destination 'assets') -Recurse -Force
 $trazorDestination = Join-Path $destination 'vendor\trazor\piper_centerline_runner.ts'
 if (-not (Test-Path -LiteralPath (Split-Path -Parent $trazorDestination))) {
     throw 'Trazor is not installed in WSL. Follow README.md first.'

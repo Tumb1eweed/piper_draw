@@ -95,3 +95,17 @@ python /home/chenrui/playground/execute_plan.py \
 ```
 
 The executor validates feedback before movement, verifies every hover/contact/line/lift target, writes `draw_progress.json`, and stops issuing trajectory commands on communication loss. Accepted speed is 4–12%; the default is 8%.
+
+## Local artwork picker
+
+After running `sync_to_wsl.ps1`, double-click `start_piper_draw_ui.cmd` and
+open `http://127.0.0.1:8765` if the browser does not open automatically. The
+page lists only the curated, reviewed plans in `assets/plans/`; it does not
+accept arbitrary paths or shell commands from the browser. "检查连接" is
+read-only and the **开始作画** button remains disabled until it receives live
+CAN/joint feedback and the operator has checked the physical-workspace
+confirmation box. The executor repeats the live gate immediately before any
+movement.
+
+The local page is a convenience controller, not an emergency-stop device. In
+an emergency, use Piper's physical emergency stop.
