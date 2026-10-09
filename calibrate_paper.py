@@ -10,10 +10,10 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from pyAgxArm import AgxArmFactory, ArmModel, PiperFW, create_agx_arm_config
+from pyAgxArm import AgxArmFactory
+from piper_runtime import CALIBRATION, arm_config
 
-ROOT = Path("/home/chenrui/playground")
-DEFAULT_FILE = ROOT / "paper_calibration_current_tool.json"
+DEFAULT_FILE = CALIBRATION
 REQUIRED = ("origin", "x", "y", "lift")
 
 
@@ -65,7 +65,7 @@ def main() -> int:
     if args.record in data["points"] and not args.overwrite:
         raise SystemExit(f"{args.record} exists; use --overwrite only after deliberate repositioning")
 
-    robot = AgxArmFactory.create_arm(create_agx_arm_config(robot=ArmModel.PIPER, firmeware_version=PiperFW.V189, interface="socketcan", channel="can0"))
+    robot = AgxArmFactory.create_arm(arm_config())
     try:
         robot.connect()
         robot.set_tcp_offset([0.0] * 6)

@@ -12,12 +12,14 @@ import json
 import math
 import re
 import subprocess
+import sys
 import time
 from pathlib import Path
 
+from piper_runtime import CALIBRATION, arm_config, arm_fault_reason, can_connection
+
 
 ROOT = Path(__file__).resolve().parent
-CALIBRATION = ROOT / "paper_calibration_current_tool.json"
 HOVER_MM = 22.0
 MAX_POINT_STEP_MM = 5.0
 ARRIVAL_TOLERANCE_MM = 2.5
@@ -102,12 +104,10 @@ def paper_mapper():
 
 def status_preflight():
     """Perform the required non-motion CAN and SDK feedback gate."""
-    link = subprocess.run(["ip", "-brief", "link", "show", "can0"], text=True, capture_output=True)
-    if link.returncode != 0 or " UP " not in f" {link.stdout} ":
-        raise RuntimeError(f"can0 is not UP: {link.stdout.strip() or link.stderr.strip()}")
+    interface, channel = can_connection()
 
     reader = subprocess.run(
-        ["python", str(ROOT / "read_piper_status.py"), "--wait", "3"],
+        [sys.executable, str(ROOT / "read_piper_status.py"), "--wait", "3"],
         text=True,
         capture_output=True,
         timeout=12,
@@ -116,12 +116,13 @@ def status_preflight():
     hz_match = re.search(r"joint_feedback_hz:\s*([0-9.]+)", output)
     has_bad_feedback = "no feedback received" in output.lower()
     if (reader.returncode != 0 or has_bad_feedback or "arm_status: None" in output or
-            "connected:  True" not in output or "comm_error: False" not in output or not hz_match):
+            "connected:  True" not in output or "comm_error: False" not in output or
+            "arm_fault: none" not in output or not hz_match):
         raise RuntimeError("status reader did not receive usable arm and joint feedback:\n" + output)
     hz = float(hz_match.group(1))
     if hz < MIN_FEEDBACK_HZ:
         raise RuntimeError(f"joint feedback is only {hz:.1f} Hz (need at least {MIN_FEEDBACK_HZ:.0f} Hz)")
-    return {"can0": link.stdout.strip(), "joint_feedback_hz": hz, "reader": output}
+    return {"can_adapter": f"{interface}:{channel}", "joint_feedback_hz": hz, "reader": output}
 
 
 def distance_mm(a, b):
@@ -129,8 +130,15 @@ def distance_mm(a, b):
 
 
 def feedback_or_fail(robot, where):
-    if robot.has_comm_error() or robot.get_arm_status() is None or robot.get_joint_angles() is None or robot.get_tcp_pose() is None:
+    arm_status = robot.get_arm_status()
+    joints = robot.get_joint_angles()
+    if (robot.has_comm_error() or arm_status is None or joints is None or
+            arm_status.hz < MIN_FEEDBACK_HZ or joints.hz < MIN_FEEDBACK_HZ or
+            robot.get_tcp_pose() is None):
         raise RuntimeError(f"SDK feedback unavailable at {where}; no further trajectory commands will be issued")
+    fault = arm_fault_reason(arm_status)
+    if fault is not None:
+        raise RuntimeError(f"SDK arm/joint fault at {where}: {fault}; no further trajectory commands will be issued")
 
 
 def wait_arrival(robot, target, where, timeout=35.0):
@@ -223,14 +231,11 @@ def main():
         raise SystemExit("Refusing physical motion: require --execute --confirmed --approved-plan.")
 
     preflight = status_preflight()
-    print(json.dumps({"preflight": {"can0": preflight["can0"], "joint_feedback_hz": preflight["joint_feedback_hz"]}}, ensure_ascii=False))
-    pose, normal = paper_mapper()
+    print(json.dumps({"preflight": {"can_adapter": preflight["can_adapter"], "joint_feedback_hz": preflight["joint_feedback_hz"]}}, ensure_ascii=False))
+    pose, _normal = paper_mapper()
 
-    from pyAgxArm import AgxArmFactory, ArmModel, PiperFW, create_agx_arm_config
-    robot = AgxArmFactory.create_arm(create_agx_arm_config(
-        robot=ArmModel.PIPER, firmeware_version=PiperFW.V189, interface="socketcan", channel="can0"
-    ))
-    last_verified = None
+    from pyAgxArm import AgxArmFactory
+    robot = AgxArmFactory.create_arm(arm_config())
     try:
         robot.connect()
         time.sleep(2.0)
@@ -249,25 +254,21 @@ def main():
                    active_stroke=index, active_stroke_id=stroke["id"], active_command="hover",
                    target_tcp=hover[:3], **summary)
             move_verified(robot, hover, f"stroke {index} hover")
-            last_verified = hover
             record(progress, status="running", phase="command_pending", completed=index - 1,
                    active_stroke=index, active_stroke_id=stroke["id"], active_command="contact",
                    target_tcp=contact[:3], **summary)
             move_verified(robot, contact, f"stroke {index} contact")
-            last_verified = contact
             for point_index, point in enumerate(points[1:], 1):
                 target = pose(point, -contact_depth)
                 record(progress, status="running", phase="command_pending", completed=index - 1,
                        active_stroke=index, active_stroke_id=stroke["id"],
                        active_command=f"line point {point_index}", target_tcp=target[:3], **summary)
                 move_verified(robot, target, f"stroke {index} point {point_index}", linear=True)
-                last_verified = target
             lift = pose(points[-1], HOVER_MM)
             record(progress, status="running", phase="command_pending", completed=index - 1,
                    active_stroke=index, active_stroke_id=stroke["id"], active_command="lift",
                    target_tcp=lift[:3], **summary)
             move_verified(robot, lift, f"stroke {index} lift")
-            last_verified = lift
             record(progress, status="running", phase="drawing", completed=index, total=summary["strokes"], last_stroke=stroke["id"], **summary)
             print(f"stroke {index}/{summary['strokes']} verified: {stroke['id']}", flush=True)
         record(progress, status="complete", phase="done", completed=summary["strokes"], total=summary["strokes"], **summary)
@@ -275,14 +276,6 @@ def main():
         record(progress, status="stopped", phase="error", detail=str(error), **summary)
         raise
     finally:
-        try:
-            if last_verified is not None and not robot.has_comm_error() and robot.get_tcp_pose() is not None:
-                recovery = list(last_verified)
-                recovery[:3] = add(recovery[:3], scale(normal, HOVER_MM / 1000.0))
-                robot.move_p(recovery)  # Recovery is a submission only; never mask a prior failure as arrival.
-                record(progress, status="recovery_lift_requested", phase="finally", **summary)
-        except Exception:
-            pass
         robot.disconnect()
 
 

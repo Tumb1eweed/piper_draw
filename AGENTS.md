@@ -6,44 +6,42 @@ This repository controls a physical AgileX Piper arm through a candleLight USB-C
 
 Only this workflow is maintained:
 
-1. Windows `mount_piper_can.cmd` attaches candleLight to Ubuntu WSL and brings `can0` up at 1 Mbps.
-2. `calibrate_paper.py` records four pen-tip TCP references: `origin`, `x`, `y`, and `lift`. The active file is `/home/chenrui/playground/paper_calibration_current_tool.json`.
-3. Trazor converts a clean line-art reference into a centreline SVG document. `prepare_centerline_plan.py` filters, orders, maps and renders a **preview-only** JSON plan.
-4. A human reviews the preview. `execute_plan.py` performs a live feedback gate, then draws only with `--execute`, `--confirmed`, and `--approved-plan`.
-5. `piper_draw_ui.py` is an optional **local-only** picker for curated plans. It must remain bound to `127.0.0.1`, use a fixed plan allowlist, require a browser-side physical-workspace confirmation, and delegate all motion to the same executor in step 4.
+1. Windows `piper` conda environment directly opens the candleLight adapter through `python-can-candle` at 1 Mbps. Do not attach it to WSL for normal use.
+2. `calibrate_paper.py` records four pen-tip TCP references: `origin`, `x`, `y`, and `lift`. The active, Git-ignored file is `D:\Projects\piper\paper_calibration_current_tool.json`.
+3. Trazor converts clean line art into a centreline SVG document. `prepare_centerline_plan.py` filters, orders, maps and renders a **preview-only** JSON plan.
+4. A human reviews the preview. `execute_plan.py` performs a fresh live feedback gate, then draws only with `--execute`, `--confirmed`, and `--approved-plan`.
+5. `piper_draw_ui.py` is an optional **local-only** curated-plan picker. It must remain bound to `127.0.0.1`, use a fixed plan allowlist, require browser-side physical-workspace confirmation, and delegate motion to the same executor.
 
-Do not reintroduce legacy raster fills, hand-authored animal trajectories, `move_c` approximations for arbitrary curves, or old bamboo/calligraphy plans into the production workflow.
+Do not reintroduce legacy raster fills, hand-authored animal trajectories, `move_c` approximations for arbitrary curves, or old bamboo/calligraphy plans into production.
 
 ## Required live connection state
 
 Do not consider a previous successful check valid for a later motion.
 
-1. `usbipd` shows candleLight as Attached (or auto-attached) to Ubuntu WSL.
-2. `wsl -d Ubuntu -- ip -brief link show can0` reports `UP`.
-3. `read_piper_status.py --wait 3` shows `connected: True`, `comm_error: False`, non-empty `arm_status`, non-empty joint feedback, and a real feedback rate (normally about 200 Hz; production gate requires at least 100 Hz).
+1. `usbipd list` shows candleLight as `Shared` / local Windows, **not** `Attached` to WSL. `python-can-candle` discovers the expected serial/channel `002A00475547571120343930:0`.
+2. `read_piper_status.py --wait 3` shows `connected: True`, `comm_error: False`, non-empty `arm_status`, non-empty joint feedback, and a real feedback rate of at least 100 Hz (normally ~200 Hz).
 
-`can0 UP` alone is insufficient. If CAN RX is zero, feedback is absent, or any SDK communication error appears, do not issue drawing, teaching, gripper, reset, or joint-motion commands.
+USB discovery alone is insufficient. If CAN RX is zero, feedback is absent, or any SDK communication error appears, do not issue drawing, teaching, gripper, reset, or joint-motion commands. Never run the Windows upper-controller and SDK concurrently.
 
 ## Safety and ownership
 
-- Keep the Windows upper-controller application closed while the SDK owns CAN.
 - Confirm arm power, released emergency stop, clear workspace, clamped paper, and secure pen before live execution.
-- `calibrate_paper.py` records feedback only; it must not move the arm. The four points must use the actual pen/tool and the same zero SDK TCP offset as the executor.
-- Never alter `paper_calibration_current_tool.json` implicitly while preparing an image or changing a drawing.
-- Every pen-down path is `hover -> verified contact -> verified line targets -> verified lift`. On a feedback failure, stop sending future targets.
-- Piper's SDK labels `motion_status == 1` as `REACH_TARGET_POS_FAILED`, but its protocol meaning is simply **not yet reached**. It is a progress state, not a terminal trajectory error. The executor requires three consecutive `motion_status == 0` samples within its Cartesian tolerance; only an executor timeout (recorded as `status: stopped`), lost SDK feedback, or a joint/arm fault is a trajectory failure. Do not kill a live executor based solely on a `motion_status == 1` reader snapshot.
-- During a draw, inspect `draw_progress.json` for the active stroke and target. It is updated before every hover, contact, line, and lift command, so a real timeout can be reproduced without guessing which coordinate failed.
-- After a replug, rerun `mount_piper_can.cmd`; do not merely run `ip link set can0 up`.
+- `calibrate_paper.py` records feedback only; it must not move the arm. Four points must use the actual pen/tool and the same zero SDK TCP offset as the executor.
+- Never alter `paper_calibration_current_tool.json` implicitly while preparing an image or changing a drawing. Existing WSL calibration was copied byte-for-byte for migration; revalidate if the physical setup changes.
+- Every pen-down path is `hover -> verified contact -> verified line targets -> verified lift`. On feedback failure, stop sending future targets.
+- Piper's SDK labels `motion_status == 1` as `REACH_TARGET_POS_FAILED`, but protocol meaning is **not yet reached**. It is progress, not terminal trajectory error. Require three consecutive `motion_status == 0` samples within Cartesian tolerance; only executor timeout (`status: stopped`), lost SDK feedback, or joint/arm fault is failure. Do not kill live execution based solely on one `motion_status == 1` snapshot.
+- During a draw, inspect `draw_progress.json` for active stroke and target; it updates before every hover/contact/line/lift command.
+- After replug, Windows should rediscover the adapter without `usbipd` attachment. If the old WSL auto-attach process takes it, stop that specific process and detach it. Do not run `mount_piper_can.cmd` for Windows operation.
 
 ## Dependencies
 
-- Windows: WSL2 Ubuntu, `usbipd-win`, PowerShell, candleLight gs_usb adapter.
-- WSL: Miniconda Python 3.12 environment named `piper` from `environment.yml`.
-- Python: `pyAgxArm==1.0.0`, `python-can==4.6.1`, `Pillow==12.3.0`.
-- Centreline conversion: Node.js 22 and Trazor commit `d5dd561830defbff379a5fba18990cf7efc0267d`.
+- Windows: Miniconda `piper` Python 3.12, candleLight gs_usb adapter with a Windows USB driver accessible to `python-can-candle`; this machine's adapter is discovered directly by the plugin.
+- Python: official pyAgxArm 1.0.0 at commit `841a625f5f4920e776f20b934eb13048b747e6d0`, `python-can==4.6.1`, `python-can-candle==1.2.4`, `candle-api==0.0.12`, `Pillow==12.3.0`. See `requirements-sdk.txt` and `setup_windows.ps1`.
+- Centreline conversion: Node.js 24.x in the same conda environment (24.21.0 tested) and Trazor commit `d5dd561830defbff379a5fba18990cf7efc0267d` in ignored `vendor/trazor`.
+- WSL scripts and its conda environment are legacy fallback only. Never silently launch WSL from the Windows UI/executor.
 
 ## Repository hygiene
 
-- Source lives in `D:\Projects\piper`; deploy to `/home/chenrui/playground` with `sync_to_wsl.ps1`.
+- Source and runtime live in `D:\Projects\piper`; no routine sync to `/home/chenrui/playground`.
 - Do not commit personal paper calibration files, generated plans/previews, copied reference images, Node modules, USB logs, or old experiments.
 - Commit code and documentation changes that affect the canonical workflow.

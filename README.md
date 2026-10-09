@@ -1,111 +1,64 @@
-# Piper line-art drawing workflow
+# Piper 绘画：Windows 原生工作流
 
-This is the maintained, feedback-gated workflow used for the tiger, crane, deer, and double-fish drawings. It does **not** include older hand-authored, fill, bamboo, or calligraphy experiments.
+项目位于 `D:\Projects\piper`。Windows 直接使用 candleLight USB-CAN，不再需要日常运行 `mount_piper_can.cmd` 或 `sync_to_wsl.ps1`。这两个脚本只保留给旧 WSL 工作流。
 
-## Curated examples
+## 一次性安装
 
-`assets/references/` contains the clean source line art used by the maintained
-animal/dragon examples. `assets/trajectory-previews/` contains the reviewed
-centreline previews, and `assets/plans/` contains the matching preview-only
-JSON plans. They are reproducibility artefacts only: the plans do **not** embed
-the local paper calibration and remain inert unless explicitly passed to the
-three-flag live executor command below.
+- Windows 10/11、Miniconda（本机为 `D:\Miniconda3`）、Git。Node.js 24 由同一个 `piper` Conda 环境安装（本机已用 24.21.0 验证）。
+- candleLight `1d50:606f`、1 Mbps CAN；本机适配器序列号 `002A00475547571120343930`。Windows 必须能直接识别它，不能处于 `usbipd` 的 `Attached` 状态。
+- 在项目目录运行 `powershell -ExecutionPolicy Bypass -File .\setup_windows.ps1`。脚本使用 conda-forge 建立 Windows `piper`（Python 3.12）环境，安装锁定的 SDK、`python-can`、`python-can-candle`、Pillow，并在 `vendor\trazor` 安装固定提交的 npm 依赖。它不打开 CAN，也不更改标定。
 
-## Dependencies
+SDK 版本为 1.0.0，固定官方提交 `841a625f5f4920e776f20b934eb13048b747e6d0`；Trazor 固定提交 `d5dd561830defbff379a5fba18990cf7efc0267d`。依赖清单见 `requirements-sdk.txt`、`environment.yml` 和 Trazor 仓库自身的 `package-lock.json`。
 
-- Windows 11 with WSL2 Ubuntu and `usbipd-win`.
-- candleLight USB-CAN adapter and Piper at 1 Mbps CAN.
-- Miniconda under `/home/chenrui/miniconda3` and Node.js 22.
+固定版 Trazor 的 `npm ci` 会提示 3 条开发依赖告警（1 high、2 critical）；`npm audit --omit=dev` 结果为 0。当前仅用于本地离线预览，不运行它的开发服务器；不要为了消除提示而未经复测执行 `npm audit fix`。
 
-Create or update the WSL environment:
+## 每次使用
 
-```bash
-source /home/chenrui/miniconda3/etc/profile.d/conda.sh
-conda env update --prefix /home/chenrui/miniconda3/envs/piper --file /mnt/d/Projects/piper/environment.yml --prune
-conda activate piper
-```
+1. 关闭松灵 Windows 上位机，确认机械臂上电、急停释放、工作区清空、纸张固定、笔夹紧。不要同时运行旧 WSL UI 或作画进程。
+2. `usbipd list` 应显示 candleLight 为 `Shared`（不是 `Attached`）。如果被旧 WSL 自动挂载进程占用，先停止那个进程，并用实际 BUSID 执行 `usbipd detach --busid <BUSID>`；不要运行 `mount_piper_can.cmd`。正常重插后 Windows 会直接重新识别，无需挂载。
+3. 运行 `& 'D:\Miniconda3\envs\piper\python.exe' .\read_piper_status.py --wait 3`。只有 `connected: True`、`comm_error: False`、非空 `arm_status` 和关节状态、反馈至少 100 Hz 时才继续。本机迁移验证曾读到约 220–230 Hz。
+4. 双击 `start_piper_draw_ui.cmd`，打开 `http://127.0.0.1:8765/`，检查连接并选择经审核的画。网页仅在本机开放，不能代替物理急停。
 
-Install Trazor once:
+## 四点纸面标定
 
-```bash
-mkdir -p /home/chenrui/playground/vendor
-git clone https://github.com/PhenX/Trazor.git /home/chenrui/playground/vendor/trazor
-cd /home/chenrui/playground/vendor/trazor
-git checkout d5dd561830defbff379a5fba18990cf7efc0267d
-npm ci
-```
-
-## 1. Deploy source and attach CAN
-
-In Windows PowerShell:
+当前 Windows 标定文件是项目根目录下的 `paper_calibration_current_tool.json`，由原 WSL 文件原样复制，未重新标定；文件被 Git 忽略。现有笔、纸张、装夹和零 TCP 偏移不变时可以沿用。若这些条件变了，用实际笔尖手动定位并依次录入 `origin`、`x`、`y`、`lift`，其中 `lift` 须位于原点正上方。脚本只采集反馈，不移动机械臂：
 
 ```powershell
-.\sync_to_wsl.ps1
-.\mount_piper_can.cmd
-wsl -d Ubuntu -- ip -brief link show can0
-wsl -d Ubuntu -- bash -lc "source /home/chenrui/miniconda3/etc/profile.d/conda.sh && conda activate piper && python /home/chenrui/playground/read_piper_status.py --wait 3"
+$python = 'D:\Miniconda3\envs\piper\python.exe'
+& $python .\calibrate_paper.py --record origin --overwrite
+& $python .\calibrate_paper.py --record x --overwrite
+& $python .\calibrate_paper.py --record y --overwrite
+& $python .\calibrate_paper.py --record lift --overwrite
+& $python .\calibrate_paper.py
 ```
 
-The Windows upper-controller must be closed. Continue only when `can0` is UP and live feedback is normal.
+只在对应点手动放好后执行那一行。最后一行必须报告 `valid four-point frame`。不要让准备图片的步骤隐式覆盖标定。
 
-## 2. Four-point paper calibration
+## 新图片到预览计划
 
-With the actual pen installed, manually position the pen tip at: `origin` (chosen paper origin), `x` (positive paper-X), `y` (positive paper-Y), and `lift` (directly above origin). After each manual placement and feedback check, run:
+用清晰的线稿 PNG。Trazor 只生成中心线 SVG 和元数据，Python 只生成供人审核的预览与 JSON；它们不连接机械臂：
 
-```bash
-source /home/chenrui/miniconda3/etc/profile.d/conda.sh
-conda activate piper
-python /home/chenrui/playground/calibrate_paper.py --record origin --overwrite
-python /home/chenrui/playground/calibrate_paper.py --record x --overwrite
-python /home/chenrui/playground/calibrate_paper.py --record y --overwrite
-python /home/chenrui/playground/calibrate_paper.py --record lift --overwrite
-python /home/chenrui/playground/calibrate_paper.py
+```powershell
+$env:TRAZOR_MAX_DIMENSION = '768'
+$env:TRAZOR_PRUNE_LENGTH = '12'
+$env:TRAZOR_SMOOTHING = '0.78'
+$env:TRAZOR_FIT_TOLERANCE = '2.1'
+$env:TRAZOR_SIMPLIFY_TOLERANCE = '1.0'
+Copy-Item .\trazor_centerline_runner.ts .\vendor\trazor\piper_centerline_runner.ts -Force
+& 'D:\Miniconda3\envs\piper\node.exe' .\vendor\trazor\node_modules\tsx\dist\cli.mjs .\vendor\trazor\piper_centerline_runner.ts .\references\my_art.png .\generated\my_art\my_art.svg
+& 'D:\Miniconda3\envs\piper\python.exe' .\prepare_centerline_plan.py --source .\generated\my_art\my_art.svg.document.json --out .\generated\my_art\review --name my_art --x-min 15 --x-max 165 --y-min 15 --y-max 150
 ```
 
-The final command must say the frame is valid. This script only reads TCP feedback; it never commands motion.
+检查预览 PNG 的尺寸、轮廓、断线与越界后才允许执行。`generated/`、个人参考图和标定数据均不入 Git；审核通过的精选图、预览和计划才可作为 `assets/` 提交。
 
-## 3. Image to preview-only plan
+## 命令行作画
 
-Put a high-contrast line-art PNG at `/home/chenrui/playground/references/<name>.png`, then:
+先运行不连接 CAN 的 dry-run。真人复核预览与现场，再带齐三个授权参数；执行器会重新检查实时反馈并逐点验证 `hover → contact → line → lift`。
 
-```bash
-cd /home/chenrui/playground/vendor/trazor
-env PATH=/home/chenrui/playground/tools/node-v22.16.0-linux-x64/bin:/usr/local/bin:/usr/bin:/bin \
-  TRAZOR_MAX_DIMENSION=768 TRAZOR_PRUNE_LENGTH=12 TRAZOR_SMOOTHING=0.78 \
-  TRAZOR_FIT_TOLERANCE=2.1 TRAZOR_SIMPLIFY_TOLERANCE=1.0 \
-  /bin/sh node_modules/.bin/tsx piper_centerline_runner.ts \
-  /home/chenrui/playground/references/<name>.png /home/chenrui/playground/generated/<name>/<name>.svg
-
-python /home/chenrui/playground/prepare_centerline_plan.py \
-  --source /home/chenrui/playground/generated/<name>/<name>.svg.document.json \
-  --out /home/chenrui/playground/generated/<name>/review \
-  --name <name> --x-min 15 --x-max 165 --y-min 15 --y-max 150
+```powershell
+$python = 'D:\Miniconda3\envs\piper\python.exe'
+& $python .\execute_plan.py --plan .\assets\plans\tiger_large_detail_plan.json
+& $python .\execute_plan.py --plan .\assets\plans\tiger_large_detail_plan.json --execute --confirmed --approved-plan --speed 8
 ```
 
-Inspect `<name>_preview.png`. Do not execute if it has crop-boundary spikes, missing components, or an incorrect footprint.
-
-## 4. Live drawing
-
-After preview approval and a fresh connection check:
-
-```bash
-python /home/chenrui/playground/execute_plan.py \
-  --plan /home/chenrui/playground/generated/<name>/review/<name>_plan.json \
-  --execute --confirmed --approved-plan --speed 8
-```
-
-The executor validates feedback before movement, verifies every hover/contact/line/lift target, writes `draw_progress.json`, and stops issuing trajectory commands on communication loss. Accepted speed is 4–12%; the default is 8%.
-
-## Local artwork picker
-
-After running `sync_to_wsl.ps1`, double-click `start_piper_draw_ui.cmd` and
-open `http://127.0.0.1:8765` if the browser does not open automatically. The
-page lists only the curated, reviewed plans in `assets/plans/`; it does not
-accept arbitrary paths or shell commands from the browser. "检查连接" is
-read-only and the **开始作画** button remains disabled until it receives live
-CAN/joint feedback and the operator has checked the physical-workspace
-confirmation box. The executor repeats the live gate immediately before any
-movement.
-
-The local page is a convenience controller, not an emergency-stop device. In
-an emergency, use Piper's physical emergency stop.
+允许速度 4–12%。执行进度写在计划旁的 `draw_progress.json`。通信或反馈失效时不得继续发轨迹；真实机械臂运动需人工现场监护。Windows 迁移已验证环境、CAN 帧接收、SDK 关节反馈、预览生成和执行器预检；迁移过程中**未做任何运动测试**。

@@ -10,7 +10,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
+import sys
 import threading
 import time
 from collections import deque
@@ -20,10 +22,10 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from piper_runtime import can_connection
+
 
 ROOT = Path(__file__).resolve().parent
-WSL_ROOT = "/home/chenrui/playground"
-CONDA_INIT = "/home/chenrui/miniconda3/etc/profile.d/conda.sh"
 
 # These are the only plans the UI can ever start.  Add an item only after the
 # preview has been reviewed; client-provided names and paths are never trusted.
@@ -33,35 +35,35 @@ DRAWINGS: dict[str, dict[str, str]] = {
         "subtitle": "大尺寸细节线稿",
         "reference": "assets/references/tiger_walking_line_art_reference_v1.png",
         "preview": "assets/trajectory-previews/tiger_large_detail_preview.png",
-        "plan": f"{WSL_ROOT}/assets/plans/tiger_large_detail_plan.json",
+        "plan": "assets/plans/tiger_large_detail_plan.json",
     },
     "crane": {
         "title": "丹顶鹤",
         "subtitle": "简洁轮廓与水波",
         "reference": "assets/references/crane_line_art_reference_v1.png",
         "preview": "assets/trajectory-previews/crane_detailed_trajectory_preview.png",
-        "plan": f"{WSL_ROOT}/assets/plans/crane_detailed_paths_preview.json",
+        "plan": "assets/plans/crane_detailed_paths_preview.json",
     },
     "deer": {
         "title": "鹿",
         "subtitle": "角、蹄与斑点细节",
         "reference": "assets/references/deer_line_art_reference_v1.png",
         "preview": "assets/trajectory-previews/deer_detailed_trajectory_preview.png",
-        "plan": f"{WSL_ROOT}/assets/plans/deer_detailed_paths_preview.json",
+        "plan": "assets/plans/deer_detailed_paths_preview.json",
     },
     "fish": {
         "title": "双鱼",
         "subtitle": "双鱼环游线稿",
         "reference": "assets/references/double_fish_line_art_reference_v1.png",
         "preview": "assets/trajectory-previews/fish_detailed_trajectory_preview.png",
-        "plan": f"{WSL_ROOT}/assets/plans/fish_detailed_paths_preview.json",
+        "plan": "assets/plans/fish_detailed_paths_preview.json",
     },
     "dragon": {
         "title": "龙",
         "subtitle": "纵向展开版",
         "reference": "assets/references/dragon_simple_lineart_reference_v2.png",
         "preview": "assets/trajectory-previews/dragon_simple_wide_preview.png",
-        "plan": f"{WSL_ROOT}/assets/plans/dragon_simple_wide_plan.json",
+        "plan": "assets/plans/dragon_simple_wide_plan.json",
     },
 }
 
@@ -69,15 +71,12 @@ DRAWINGS: dict[str, dict[str, str]] = {
 class DrawManager:
     def __init__(self) -> None:
         self._lock = threading.Lock()
+        self._probe_lock = threading.Lock()
         self._process: subprocess.Popen[str] | None = None
         self._drawing_id: str | None = None
         self._started_at: float | None = None
         self._returncode: int | None = None
         self._lines: deque[str] = deque(maxlen=24)
-
-    @staticmethod
-    def _wsl(*args: str) -> list[str]:
-        return ["wsl", "-d", "Ubuntu", "--", *args]
 
     def status(self) -> dict[str, Any]:
         with self._lock:
@@ -93,27 +92,24 @@ class DrawManager:
     def start(self, drawing_id: str) -> tuple[bool, str]:
         if drawing_id not in DRAWINGS:
             return False, "未知画作。"
-        with self._lock:
-            if self._process is not None and self._process.poll() is None:
-                return False, "已有作画任务正在运行；请等待完成或使用物理急停。"
-            plan = DRAWINGS[drawing_id]["plan"]
-            command = (
-                f"source {CONDA_INIT} && conda activate piper && "
-                f"python {WSL_ROOT}/execute_plan.py --plan {plan} "
-                "--execute --confirmed --approved-plan --speed 8"
-            )
-            self._lines.clear()
-            self._drawing_id = drawing_id
-            self._started_at = time.time()
-            self._returncode = None
-            self._process = subprocess.Popen(
-                self._wsl("bash", "-lc", command),
-                text=True, encoding="utf-8", errors="replace",
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,
-                cwd=ROOT,
-            )
-            threading.Thread(target=self._capture, args=(self._process,), daemon=True).start()
+        with self._probe_lock:
+            with self._lock:
+                if self._process is not None and self._process.poll() is None:
+                    return False, "已有作画任务正在运行；请等待完成或使用物理急停。"
+                plan = ROOT / DRAWINGS[drawing_id]["plan"]
+                self._lines.clear()
+                self._drawing_id = drawing_id
+                self._started_at = time.time()
+                self._returncode = None
+                self._process = subprocess.Popen(
+                    [sys.executable, str(ROOT / "execute_plan.py"), "--plan", str(plan),
+                     "--execute", "--confirmed", "--approved-plan", "--speed", "8"],
+                    text=True, encoding="utf-8", errors="replace",
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.STDOUT,
+                    cwd=ROOT,
+                )
+                threading.Thread(target=self._capture, args=(self._process,), daemon=True).start()
         return True, "已启动。执行器将先进行实时 CAN 与关节反馈检查。"
 
     def _capture(self, process: subprocess.Popen[str]) -> None:
@@ -127,27 +123,26 @@ class DrawManager:
 
     def connection_status(self) -> dict[str, Any]:
         """Read-only idle check; never run alongside a live drawing."""
-        if self.status()["active"]:
-            return {"available": False, "message": "作画进行中；请查看执行日志，不并发打开第二个 SDK 连接。"}
-        try:
-            can = subprocess.run(
-                self._wsl("ip", "-brief", "link", "show", "can0"),
-                text=True, encoding="utf-8", errors="replace", capture_output=True, timeout=8, cwd=ROOT,
+        with self._probe_lock:
+            if self.status()["active"]:
+                return {"available": False, "message": "作画进行中；请查看执行日志，不并发打开第二个 SDK 连接。"}
+            try:
+                interface, channel = can_connection()
+                reader = subprocess.run(
+                    [sys.executable, str(ROOT / "read_piper_status.py"), "--wait", "3"],
+                    text=True, encoding="utf-8", errors="replace", capture_output=True, timeout=15, cwd=ROOT,
+                )
+            except (OSError, RuntimeError, subprocess.TimeoutExpired) as error:
+                return {"available": False, "message": f"无法读取连接状态：{error}"}
+            report = ((reader.stdout or "") + "\n" + (reader.stderr or "")).strip()
+            match = re.search(r"joint_feedback_hz:\s*([0-9.]+)", report)
+            usable = (
+                reader.returncode == 0 and "connected:  True" in report
+                and "comm_error: False" in report and "arm_status: None" not in report
+                and "arm_fault: none" in report
+                and match is not None and float(match.group(1)) >= 100.0
             )
-            reader_command = f"source {CONDA_INIT} && conda activate piper && python {WSL_ROOT}/read_piper_status.py --wait 3"
-            reader = subprocess.run(
-                self._wsl("bash", "-lc", reader_command),
-                text=True, encoding="utf-8", errors="replace", capture_output=True, timeout=15, cwd=ROOT,
-            )
-        except (OSError, subprocess.TimeoutExpired) as error:
-            return {"available": False, "message": f"无法读取连接状态：{error}"}
-        report = ((reader.stdout or "") + "\n" + (reader.stderr or "")).strip()
-        usable = (
-            can.returncode == 0 and " UP " in f" {can.stdout} " and reader.returncode == 0
-            and "connected:  True" in report and "comm_error: False" in report
-            and "motion_target:" in report and "joint_feedback_hz:" in report
-        )
-        return {"available": usable, "can": can.stdout.strip(), "report": report}
+            return {"available": usable, "can": f"{interface}:{channel}", "report": report}
 
 
 MANAGER = DrawManager()
@@ -179,6 +174,12 @@ class Handler(SimpleHTTPRequestHandler):
             return
         if endpoint == "/":
             self.path = "/ui/index.html"
+            endpoint = self.path
+        static_paths = {"/ui/index.html", "/ui/app.js", "/ui/styles.css"}
+        static_paths.update("/" + value[k] for value in DRAWINGS.values() for k in ("reference", "preview"))
+        if endpoint not in static_paths:
+            self.send_error(HTTPStatus.NOT_FOUND)
+            return
         return super().do_GET()
 
     def do_POST(self) -> None:  # noqa: N802

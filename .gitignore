@@ -16,10 +16,12 @@ references/
 # Curated reproducible examples are intentionally versioned.
 !assets/
 !assets/**
+/assets/**/draw_progress.json
 
 # Dependency and accidental WSL-copy directories
 .trazor_npm_stage_*/
 wsl.localhost/
 node_modules/
+vendor/
 tools/
 __pycache__/
