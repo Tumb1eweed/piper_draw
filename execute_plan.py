@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Safely execute the reviewed detailed tiger centreline plan on Piper.
+"""Safely execute a reviewed centreline plan on Piper.
 
 This program is deliberately inert unless all three execution flags are
 present.  Its normal use is ``--dry-run`` (the default), which validates the
@@ -14,8 +14,10 @@ import re
 import subprocess
 import sys
 import time
+import uuid
 from pathlib import Path
 
+from draw_run_state import file_hash, paths_for_plan, read_json, set_stop, stop_requested, write_json
 from piper_runtime import CALIBRATION, arm_config, arm_fault_reason, can_connection
 
 
@@ -50,9 +52,8 @@ def unit(a):
 
 
 def record(progress, **data):
-    progress.parent.mkdir(parents=True, exist_ok=True)
     data["timestamp"] = time.time()
-    progress.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    write_json(progress, data)
 
 
 def load_plan(path):
@@ -61,7 +62,7 @@ def load_plan(path):
     data = json.loads(path.read_text(encoding="utf-8"))
     strokes = data.get("strokes")
     if data.get("status") != "preview_only_no_robot_motion" or not isinstance(strokes, list) or not strokes:
-        raise RuntimeError("unexpected tiger plan format; regenerate/review the preview first")
+        raise RuntimeError("unexpected centreline plan format; regenerate/review the preview first")
     for index, stroke in enumerate(strokes, 1):
         points = stroke.get("points")
         if not isinstance(points, list) or len(points) < 2:
@@ -214,15 +215,23 @@ def main():
     parser.add_argument("--plan", type=Path, required=True, help="reviewed preview-only plan.json to run")
     parser.add_argument("--speed", type=int, default=8, help="motion speed percent (4..12; default 8)")
     parser.add_argument("--depth-offset-mm", type=float, default=0.0, help="add -0.4..+0.4 mm to reviewed contact depths")
+    parser.add_argument("--resume", action="store_true", help="resume a verified user-paused checkpoint")
+    parser.add_argument("--restart", action="store_true", help="explicitly discard a prior checkpoint and start at stroke one")
+    parser.add_argument("--run-id", help="opaque control token supplied by the local UI")
     args = parser.parse_args()
 
     if not 4 <= args.speed <= 12:
         raise SystemExit("--speed must be between 4 and 12 percent")
     if not -0.4 <= args.depth_offset_mm <= 0.4:
         raise SystemExit("--depth-offset-mm must be between -0.4 and +0.4")
+    if args.resume and args.restart:
+        raise SystemExit("--resume and --restart are mutually exclusive")
     plan_path = args.plan.expanduser().resolve()
-    progress = plan_path.with_name("draw_progress.json")
+    progress, control = paths_for_plan(plan_path)
+    plan_sha = file_hash(plan_path)
     plan = load_plan(plan_path)
+    if file_hash(plan_path) != plan_sha:
+        raise SystemExit("Plan changed while loading; refuse motion")
     summary = plan_summary(plan)
     print(json.dumps({"mode": "execute" if args.execute else "dry-run", "plan": str(plan_path), **summary}, ensure_ascii=False, indent=2))
     if not args.execute:
@@ -230,50 +239,133 @@ def main():
     if not (args.confirmed and args.approved_plan):
         raise SystemExit("Refusing physical motion: require --execute --confirmed --approved-plan.")
 
+    calibration_sha = file_hash(CALIBRATION)
+    previous = read_json(progress)
+    if args.resume:
+        if not previous or previous.get("status") != "paused":
+            raise SystemExit("Only a verified paused checkpoint can be resumed")
+        if previous.get("plan_sha256") != plan_sha or previous.get("calibration_sha256") != calibration_sha:
+            raise SystemExit("Plan or paper calibration changed; cannot resume")
+        if previous.get("speed") != args.speed or previous.get("depth_offset_mm") != args.depth_offset_mm:
+            raise SystemExit("Motion parameters changed; cannot resume")
+        start_stroke = previous.get("next_stroke")
+        start_point = previous.get("next_point")
+        if (not isinstance(start_stroke, int) or not 0 <= start_stroke < len(plan["strokes"]) or
+                not isinstance(start_point, int) or start_point < 1 or
+                start_point >= len(bounded_steps(rdp(plan["strokes"][start_stroke]["points"])))):
+            raise SystemExit("Paused checkpoint is invalid; refuse motion")
+    else:
+        if previous and previous.get("status") == "stopped":
+            raise SystemExit("Previous run failed; inspect the arm and resolve the checkpoint manually before new motion")
+        if previous and previous.get("status") in ("paused", "running") and not args.restart:
+            raise SystemExit("Existing checkpoint needs --resume or explicit --restart")
+        start_stroke, start_point = 0, 1
+
+    run_id = args.run_id or uuid.uuid4().hex
+    if args.run_id:
+        control_data = read_json(control)
+        if not control_data or control_data.get("run_id") != run_id:
+            raise SystemExit("UI control token is missing or stale")
+    else:
+        set_stop(control, run_id, False)
+
+    base = {"run_id": run_id, "plan_sha256": plan_sha, "calibration_sha256": calibration_sha,
+            "speed": args.speed, "depth_offset_mm": args.depth_offset_mm, "total": summary["strokes"], **summary}
+
+    def checkpoint(status, phase, stroke_idx, next_point, **details):
+        record(progress, **base, status=status, phase=phase, completed=stroke_idx,
+               next_stroke=stroke_idx, next_point=next_point, **details)
+
     preflight = status_preflight()
     print(json.dumps({"preflight": {"can_adapter": preflight["can_adapter"], "joint_feedback_hz": preflight["joint_feedback_hz"]}}, ensure_ascii=False))
     pose, _normal = paper_mapper()
+    if file_hash(CALIBRATION) != calibration_sha:
+        raise SystemExit("Paper calibration changed during preflight; refuse motion")
 
     from pyAgxArm import AgxArmFactory
     robot = AgxArmFactory.create_arm(arm_config())
+    started = False
     try:
         robot.connect()
         time.sleep(2.0)
         feedback_or_fail(robot, "SDK startup")
         robot.set_motion_mode("p")
         robot.set_speed_percent(args.speed)
-        record(progress, status="running", phase="preflight_passed", completed=0, total=summary["strokes"], **summary)
+        if stop_requested(control, run_id):
+            # No trajectory command has been sent; preserve the previous safe checkpoint.
+            checkpoint("paused", "stopped_before_motion", start_stroke, start_point)
+            return
+        checkpoint("running", "preflight_passed", start_stroke, start_point)
+        started = True
 
-        for index, stroke in enumerate(plan["strokes"], 1):
+        for stroke_idx in range(start_stroke, len(plan["strokes"])):
+            index = stroke_idx + 1
+            stroke = plan["strokes"][stroke_idx]
             points = bounded_steps(rdp(stroke["points"]))
+            first_target = start_point if stroke_idx == start_stroke else 1
+            anchor_index = first_target - 1
             contact_depth = float(stroke["recommended_contact_depth_mm"]) + args.depth_offset_mm
             contact_depth = min(1.4, max(0.4, contact_depth))
-            hover = pose(points[0], HOVER_MM)
-            contact = pose(points[0], -contact_depth)
-            record(progress, status="running", phase="command_pending", completed=index - 1,
-                   active_stroke=index, active_stroke_id=stroke["id"], active_command="hover",
-                   target_tcp=hover[:3], **summary)
+            hover = pose(points[anchor_index], HOVER_MM)
+            contact = pose(points[anchor_index], -contact_depth)
+
+            def pause_at(next_point, pen_down):
+                if not stop_requested(control, run_id):
+                    return False
+                if pen_down:
+                    lift_here = pose(points[next_point - 1], HOVER_MM)
+                    checkpoint("running", "command_pending", stroke_idx, next_point,
+                               active_stroke=index, active_stroke_id=stroke["id"],
+                               active_command="stop_lift", target_tcp=lift_here[:3])
+                    move_verified(robot, lift_here, f"stroke {index} stop lift")
+                if next_point >= len(points):
+                    finished = stroke_idx + 1 == len(plan["strokes"])
+                    checkpoint("complete" if finished else "paused",
+                               "done" if finished else "stopped_by_user", stroke_idx + 1, 1,
+                               last_stroke=stroke["id"])
+                else:
+                    checkpoint("paused", "stopped_by_user", stroke_idx, next_point,
+                               active_stroke=index, active_stroke_id=stroke["id"])
+                return True
+
+            if pause_at(first_target, False):
+                return
+            checkpoint("running", "command_pending", stroke_idx, first_target,
+                       active_stroke=index, active_stroke_id=stroke["id"], active_command="hover",
+                       target_tcp=hover[:3])
             move_verified(robot, hover, f"stroke {index} hover")
-            record(progress, status="running", phase="command_pending", completed=index - 1,
-                   active_stroke=index, active_stroke_id=stroke["id"], active_command="contact",
-                   target_tcp=contact[:3], **summary)
+            if pause_at(first_target, False):
+                return
+            checkpoint("running", "command_pending", stroke_idx, first_target,
+                       active_stroke=index, active_stroke_id=stroke["id"], active_command="contact",
+                       target_tcp=contact[:3])
             move_verified(robot, contact, f"stroke {index} contact")
-            for point_index, point in enumerate(points[1:], 1):
+            if pause_at(first_target, True):
+                return
+            for point_index in range(first_target, len(points)):
+                point = points[point_index]
                 target = pose(point, -contact_depth)
-                record(progress, status="running", phase="command_pending", completed=index - 1,
-                       active_stroke=index, active_stroke_id=stroke["id"],
-                       active_command=f"line point {point_index}", target_tcp=target[:3], **summary)
+                checkpoint("running", "command_pending", stroke_idx, point_index,
+                           active_stroke=index, active_stroke_id=stroke["id"],
+                           active_command=f"line point {point_index}", target_tcp=target[:3])
                 move_verified(robot, target, f"stroke {index} point {point_index}", linear=True)
+                if pause_at(point_index + 1, True):
+                    return
             lift = pose(points[-1], HOVER_MM)
-            record(progress, status="running", phase="command_pending", completed=index - 1,
-                   active_stroke=index, active_stroke_id=stroke["id"], active_command="lift",
-                   target_tcp=lift[:3], **summary)
+            checkpoint("running", "command_pending", stroke_idx, len(points),
+                       active_stroke=index, active_stroke_id=stroke["id"], active_command="lift",
+                       target_tcp=lift[:3])
             move_verified(robot, lift, f"stroke {index} lift")
-            record(progress, status="running", phase="drawing", completed=index, total=summary["strokes"], last_stroke=stroke["id"], **summary)
+            if stop_requested(control, run_id) and index < len(plan["strokes"]):
+                checkpoint("paused", "stopped_by_user", index, 1, last_stroke=stroke["id"])
+                return
+            checkpoint("running", "drawing", index, 1, last_stroke=stroke["id"])
             print(f"stroke {index}/{summary['strokes']} verified: {stroke['id']}", flush=True)
-        record(progress, status="complete", phase="done", completed=summary["strokes"], total=summary["strokes"], **summary)
+        checkpoint("complete", "done", summary["strokes"], 1)
     except Exception as error:
-        record(progress, status="stopped", phase="error", detail=str(error), **summary)
+        if started:
+            checkpoint("stopped", "error", stroke_idx if "stroke_idx" in locals() else start_stroke,
+                       first_target if "first_target" in locals() else start_point, detail=str(error))
         raise
     finally:
         robot.disconnect()

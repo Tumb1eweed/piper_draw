@@ -39,8 +39,13 @@
         </div>
         <img id="art-preview" alt="所选画作预览" />
         <label class="confirm"><input id="safety-confirm" type="checkbox" /> <span>我确认：上位机已关闭、机械臂已上电、急停已释放、纸张固定、毛笔夹紧且工作区无人。</span></label>
-        <button id="draw-button" class="primary" disabled>开始作画</button>
-        <p class="warning">紧急情况请使用机械臂的物理急停；此页面不是安全急停装置。</p>
+        <div class="draw-actions">
+          <button id="draw-button" class="primary" disabled>开始作画</button>
+          <button id="stop-button" class="stop-button" disabled>停止</button>
+          <button id="resume-button" class="secondary" disabled>继续</button>
+          <button id="restart-button" class="secondary" disabled>从头开始</button>
+        </div>
+        <p class="warning">“停止”会等待当前目标到达再抬笔，并非急停；紧急情况请按机械臂物理急停。“从头开始”会重画，先换新纸或确认可覆盖旧画。</p>
       </section>
 
       <section class="execution" aria-live="polite">
