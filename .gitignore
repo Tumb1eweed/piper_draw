@@ -18,7 +18,7 @@ references/
 !assets/**
 /assets/**/draw_progress.json
 
-# Dependency and accidental WSL-copy directories
+# Dependencies and local archive directories (never deploy these copies)
 .trazor_npm_stage_*/
 wsl.localhost/
 node_modules/

@@ -1,9 +1,12 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-set "PIPER_PYTHON=D:\Miniconda3\envs\piper\python.exe"
+rem Optional first argument or environment variable supports another machine.
+if not "%~1"=="" set "PIPER_PYTHON=%~1"
+if not defined PIPER_PYTHON set "PIPER_PYTHON=D:\Miniconda3\envs\piper\python.exe"
 if not exist "%PIPER_PYTHON%" (
     echo Missing Windows piper conda environment: %PIPER_PYTHON%
+    echo Run setup_windows.ps1 first, then pass the full piper python.exe path as argument.
     pause
     exit /b 1
 )

@@ -21,10 +21,10 @@ def can_connection() -> tuple[str, str]:
             raise RuntimeError(
                 "Windows candleLight adapter not found. Expected "
                 f"{WINDOWS_CANDLE_CHANNEL}; detected {sorted(found)}. "
-                "Keep it detached from WSL and close the upper-controller app."
+                "Check the Windows USB driver and close the upper-controller app."
             )
         return "candle", WINDOWS_CANDLE_CHANNEL
-    return "socketcan", "can0"
+    raise RuntimeError("This drawing workflow supports native Windows only.")
 
 
 def arm_config():

@@ -1,6 +1,8 @@
 # Piper 绘画：Windows 原生工作流
 
-项目位于 `D:\Projects\piper`。Windows 直接使用 candleLight USB-CAN，不再需要日常运行 `mount_piper_can.cmd` 或 `sync_to_wsl.ps1`。这两个脚本只保留给旧 WSL 工作流。
+Windows 直接使用 candleLight USB-CAN。项目可放在任意本地目录，本机为 `D:\Projects\piper`。
+
+迁移到另一台 Windows 机器请按 [MIGRATION_WINDOWS.md](MIGRATION_WINDOWS.md) 操作。前端静态文件由 Python 后端直接提供，无需单独构建或部署前端。
 
 ## 一次性安装
 
@@ -14,8 +16,8 @@ SDK 版本为 1.0.0，固定官方提交 `841a625f5f4920e776f20b934eb13048b747e6
 
 ## 每次使用
 
-1. 关闭松灵 Windows 上位机，确认机械臂上电、急停释放、工作区清空、纸张固定、笔夹紧。不要同时运行旧 WSL UI 或作画进程。
-2. `usbipd list` 应显示 candleLight 为 `Shared`（不是 `Attached`）。如果被旧 WSL 自动挂载进程占用，先停止那个进程，并用实际 BUSID 执行 `usbipd detach --busid <BUSID>`；不要运行 `mount_piper_can.cmd`。正常重插后 Windows 会直接重新识别，无需挂载。
+1. 关闭松灵 Windows 上位机，确认机械臂上电、急停释放、工作区清空、纸张固定、笔夹紧。不要同时运行其他作画进程。
+2. USB-CAN 由 Windows 直接识别，确认适配器未被其他程序占用。正常重插后无需挂载。
 3. 运行 `& 'D:\Miniconda3\envs\piper\python.exe' .\read_piper_status.py --wait 3`。只有 `connected: True`、`comm_error: False`、非空 `arm_status` 和关节状态、反馈至少 100 Hz 时才继续。本机迁移验证曾读到约 220–230 Hz。
 4. 双击 `start_piper_draw_ui.cmd`，打开 `http://127.0.0.1:8765/`，检查连接并选择经审核的画。网页仅在本机开放，不能代替物理急停。
 
@@ -23,7 +25,7 @@ SDK 版本为 1.0.0，固定官方提交 `841a625f5f4920e776f20b934eb13048b747e6
 
 ## 四点纸面标定
 
-当前 Windows 标定文件是项目根目录下的 `paper_calibration_current_tool.json`，由原 WSL 文件原样复制，未重新标定；文件被 Git 忽略。现有笔、纸张、装夹和零 TCP 偏移不变时可以沿用。若这些条件变了，用实际笔尖手动定位并依次录入 `origin`、`x`、`y`、`lift`，其中 `lift` 须位于原点正上方。脚本只采集反馈，不移动机械臂：
+标定文件是项目根目录下的 `paper_calibration_current_tool.json`，被 Git 忽略。现有笔、纸张、装夹和零 TCP 偏移不变时可以沿用。若这些条件变了，用实际笔尖手动定位并依次录入 `origin`、`x`、`y`、`lift`，其中 `lift` 须位于原点正上方。脚本只采集反馈，不移动机械臂：
 
 ```powershell
 $python = 'D:\Miniconda3\envs\piper\python.exe'
