@@ -25,7 +25,7 @@ SDK 版本为 1.0.0，固定官方提交 `841a625f5f4920e776f20b934eb13048b747e6
 
 ## 四点纸面标定
 
-标定文件是项目根目录下的 `paper_calibration_current_tool.json`，被 Git 忽略。现有笔、纸张、装夹和零 TCP 偏移不变时可以沿用。若这些条件变了，用实际笔尖手动定位并依次录入 `origin`、`x`、`y`、`lift`，其中 `lift` 须位于原点正上方。脚本只采集反馈，不移动机械臂：
+执行时的标定文件是项目根目录下的 `paper_calibration_current_tool.json`，被 Git 忽略。仓库另外保存了 `assets/calibration/paper_calibration_four_points_2026-09-27.json` 作为迁移参考；它不会自动启用，使用条件见迁移指南。现有笔、纸张、装夹和零 TCP 偏移不变时可以沿用。若这些条件变了，用实际笔尖手动定位并依次录入 `origin`、`x`、`y`、`lift`，其中 `lift` 须位于原点正上方。脚本只采集反馈，不移动机械臂：
 
 ```powershell
 $python = 'D:\Miniconda3\envs\piper\python.exe'
@@ -53,7 +53,7 @@ Copy-Item .\trazor_centerline_runner.ts .\vendor\trazor\piper_centerline_runner.
 & 'D:\Miniconda3\envs\piper\python.exe' .\prepare_centerline_plan.py --source .\generated\my_art\my_art.svg.document.json --out .\generated\my_art\review --name my_art --x-min 15 --x-max 165 --y-min 15 --y-max 150
 ```
 
-检查预览 PNG 的尺寸、轮廓、断线与越界后才允许执行。`generated/`、个人参考图和标定数据均不入 Git；审核通过的精选图、预览和计划才可作为 `assets/` 提交。
+检查预览 PNG 的尺寸、轮廓、断线与越界后才允许执行。`generated/`、未审核的个人参考图和当前使用的标定文件均不入 Git；审核通过的精选图、预览、计划和这份用户指定的历史四点参考文件保存在 `assets/`。
 
 ## 命令行作画
 

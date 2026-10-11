@@ -44,5 +44,5 @@ USB discovery alone is insufficient. If CAN RX is zero, feedback is absent, or a
 ## Repository hygiene
 
 - Source and runtime live in the same local Windows checkout (this machine: `D:\Projects\piper`).
-- Do not commit personal paper calibration files, generated plans/previews, copied reference images, Node modules, USB logs, or old experiments.
+- Do not commit the active `paper_calibration_current_tool.json`, generated plans/previews, unreviewed reference images, Node modules, USB logs, or old experiments. The user-approved archived four-point reference at `assets/calibration/paper_calibration_four_points_2026-09-27.json` is the sole exception; never load it implicitly or treat it as valid after the physical setup changes.
 - Commit code and documentation changes that affect the canonical workflow.

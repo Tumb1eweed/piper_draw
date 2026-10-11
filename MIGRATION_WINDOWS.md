@@ -47,7 +47,7 @@ $python = 'D:\Miniconda3\envs\piper\python.exe'
 
 ## 四点纸面标定
 
-Git 不包含个人 `paper_calibration_current_tool.json`。重新布置笔、纸、底座后，使用实际笔尖重新录入四点。手动定位好对应点后，关闭上位机再执行对应一行；录点脚本只采集反馈：
+仓库保存了一份历史四点参考文件 `assets/calibration/paper_calibration_four_points_2026-09-27.json`，其中的四个 TCP 位姿、记录时间与原始文件一致；已去掉旧电脑的备份路径。实际执行器读取项目根目录的 `paper_calibration_current_tool.json`，克隆仓库不会自动启用参考文件。重新布置笔、纸、底座后，应使用实际笔尖重新录入四点。手动定位好对应点后，关闭上位机再执行对应一行；录点脚本只采集反馈：
 
 ```powershell
 & $python .\calibrate_paper.py --record origin --overwrite
@@ -57,7 +57,14 @@ Git 不包含个人 `paper_calibration_current_tool.json`。重新布置笔、�
 & $python .\calibrate_paper.py
 ```
 
-origin 为落笔原点，x/y 为纸面两个方向，lift 是原点上方的抬笔参考。最后应报告 `valid four-point frame`。只有机械臂、工具、纸张、底座和零 TCP 偏移完全不变、仅更换电脑时，才可单独复制旧标定文件到项目根目录并重新检查现场。不要复制 `generated/run_state/` 的旧运行断点。
+origin 为落笔原点，x/y 为纸面两个方向，lift 是原点上方的抬笔参考。最后应报告 `valid four-point frame`。只有机械臂、工具、纸张、底座和零 TCP 偏移完全不变、仅更换电脑时，才可在检查现场后手动启用仓库中的参考文件：
+
+```powershell
+Copy-Item -LiteralPath .\assets\calibration\paper_calibration_four_points_2026-09-27.json -Destination .\paper_calibration_current_tool.json
+& $python .\calibrate_paper.py
+```
+
+不要复制 `generated/run_state/` 的旧运行断点。只要物理装夹或纸面位置有变化，就重新录入四点，不要复用参考坐标。
 
 ## 启动前端与后端
 
